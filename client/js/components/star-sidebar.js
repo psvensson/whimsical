@@ -1,4 +1,5 @@
-export function createStarSidebar(star) {
+export function createStarSidebar(system, onGoToSystem) {
+  const star = system.stars[0];
   const container = document.createElement('div');
   container.className = 'star-sidebar';
   container.innerHTML = `
@@ -11,6 +12,15 @@ export function createStarSidebar(star) {
       <li><strong>Habitable Zone:</strong> ${star.habitableZone[0].toFixed(2)} - ${star.habitableZone[1].toFixed(2)} AU</li>
     </ul>
   `;
+
+  const btn = document.createElement('button');
+  btn.textContent = 'Go to system';
+  btn.addEventListener('click', () => {
+    if (typeof onGoToSystem === 'function') {
+      onGoToSystem(system);
+    }
+  });
+  container.appendChild(btn);
   return container;
 }
 
