@@ -22,12 +22,13 @@ export function createSystemOverview(
   const maxDistance = Math.max(...planets.map(p => p.distance), 1);
   const scale = (canvas.width / 2 - 20) / maxDistance;
 
+  const starRadius = star.size * 2;
   const planetData = planets.map((planet) => {
     const orbitRadius = planet.distance * scale;
-    const angle = planet.angle || Math.random() * Math.PI * 2;
+    const angle = Math.random() * Math.PI * 2;
     const px = cx + orbitRadius * Math.cos(angle);
     const py = cy + orbitRadius * Math.sin(angle);
-    const planetRadius = planet.radius * 3;
+    const planetRadius = Math.min(planet.radius * 3, starRadius - 1);
     return { planet, orbitRadius, angle, px, py, planetRadius };
   });
 
@@ -37,23 +38,11 @@ export function createSystemOverview(
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    planetData.forEach(({ planet, orbitRadius, px, py, planetRadius }, idx) => {
-      ctx.beginPath();
-      ctx.strokeStyle = '#444';
-      ctx.arc(cx, cy, orbitRadius, 0, Math.PI * 2);
-      ctx.stroke();
+    planetData.forEach(({ planet, px, py, planetRadius }) => {
       ctx.beginPath();
       ctx.fillStyle = PLANET_COLORS[planet.type] || '#fff';
       ctx.arc(px, py, planetRadius, 0, Math.PI * 2);
       ctx.fill();
-
-       if (idx === hoveredIndex) {
-        ctx.beginPath();
-        ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-        ctx.lineWidth = 2;
-        ctx.arc(px, py, planetRadius + 3, 0, Math.PI * 2);
-        ctx.stroke();
-      }
 
       if (planet.features) {
         let iconX = px + planetRadius + 4;
@@ -74,10 +63,27 @@ export function createSystemOverview(
       }
     });
 
+    ctx.lineWidth = 1;
+    planetData.forEach(({ orbitRadius }) => {
+      ctx.beginPath();
+      ctx.strokeStyle = '#444';
+      ctx.arc(cx, cy, orbitRadius, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
     ctx.beginPath();
     ctx.fillStyle = star.color;
-    ctx.arc(cx, cy, star.size * 2, 0, Math.PI * 2);
+    ctx.arc(cx, cy, starRadius, 0, Math.PI * 2);
     ctx.fill();
+
+    if (hoveredIndex !== null) {
+      const { px, py, planetRadius } = planetData[hoveredIndex];
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+      ctx.lineWidth = 2;
+      ctx.arc(px, py, planetRadius + 3, 0, Math.PI * 2);
+      ctx.stroke();
+    }
   }
 
   function getPlanetIndex(event) {

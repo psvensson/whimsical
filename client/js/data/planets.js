@@ -39,3 +39,13 @@ export const PLANET_FEATURES = [
   { name: 'base', chance: 0.1 },
   { name: 'mine', chance: 0.1 }
 ];
+
+export const PLANET_RESOURCES = [
+  'iron',
+  'cobalt',
+  'uranium',
+  'carbon',
+  'silicon',
+  'nickel',
+  'water'
+];
