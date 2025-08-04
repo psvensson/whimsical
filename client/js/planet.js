@@ -26,10 +26,17 @@ export function generateBody(star, orbitIndex, parent = null, siblings = []) {
     radius = Math.min(radius, parent.radius * 0.1);
   }
 
+  // Determine final type based on resulting radius. Small bodies below 0.3
+  // Earth radii have no atmosphere and can only be rocky or lava worlds.
+  let type = rule.name;
+  if (radius < 0.3) {
+    type = Math.random() < 0.5 ? 'rocky' : 'lava';
+  }
+
   const temperature =
     278 * Math.pow(star.luminosity, 0.25) / Math.sqrt(distance);
   const isHabitable =
-    !!rule.habitable &&
+    type === 'terrestrial' &&
     distance >= star.habitableZone[0] &&
     distance <= star.habitableZone[1];
   const orbitalPeriod = Math.sqrt(Math.pow(distance, 3) / star.mass); // in Earth years
@@ -39,15 +46,15 @@ export function generateBody(star, orbitIndex, parent = null, siblings = []) {
   const angle = Math.random() * Math.PI * 2;
   const eccentricity = Math.random() ** 2 * 0.6;
   const orbitRotation = Math.random() * Math.PI * 2;
-  const resourceList = PLANET_RESOURCES[rule.name] || [];
+  const resourceList = PLANET_RESOURCES[type] || [];
   const resources = resourceList.reduce((acc, res) => {
     acc[res] = Math.floor(randomRange(0, 100));
     return acc;
   }, {});
-  const atmosphere = generateAtmosphere(rule.name);
+  const atmosphere = radius < 0.3 ? null : generateAtmosphere(type);
   const body = {
     name: parent ? `Moon ${orbitIndex + 1}` : `Planet ${orbitIndex + 1}`,
-    type: rule.name,
+    type,
     distance,
     radius,
     temperature,
