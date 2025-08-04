@@ -11,7 +11,8 @@ export function generateStarSystem() {
   return { stars: [star], planets };
 }
 
-export function generateGalaxy(size = 500, chance = 0.001) {
+// Default star formation chance reduced by a third to thin out the galaxy
+export function generateGalaxy(size = 500, chance = 0.001 * 2 / 3) {
   const systems = [];
   for (let x = -size; x <= size; x++) {
     for (let y = -size; y <= size; y++) {

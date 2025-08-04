@@ -2,12 +2,9 @@ import {
   PLANET_TYPES,
   PLANET_FEATURES,
   PLANET_RESOURCES,
-  PLANET_ATMOSPHERES
+  PLANET_ATMOSPHERES,
+  MOON_RULES
 } from './data/planets.js';
-
-// Smallest possible planet radius used to determine when a moon should
-// instead be considered a planet of its own.
-const MIN_PLANET_RADIUS = Math.min(...PLANET_TYPES.map((p) => p.radius[0]));
 
 // Generate an orbital body around a star or another body. The same
 // function is used for planets and moons; moons are simply bodies with
@@ -21,14 +18,20 @@ export function generateBody(star, orbitIndex, parent = null, siblings = []) {
   const prev = siblings[siblings.length - 1];
 
   const rule = selectRule(star, distance, prev);
-  let radius = randomRange(rule.radius[0], rule.radius[1]);
+  let minR = rule.radius[0];
+  let maxR = rule.radius[1];
   if (parent) {
-    radius = Math.min(radius, parent.radius * 0.1);
+    maxR = Math.min(maxR, parent.radius * 0.1);
+    minR = Math.min(minR, maxR);
   }
+  let radius = randomRange(minR, maxR);
 
   // Determine final type based on resulting radius. Small bodies below 0.3
   // Earth radii have no atmosphere and can only be rocky or lava worlds.
   let type = rule.name;
+  if (type === 'gas giant' && radius <= 4) {
+    type = 'ice';
+  }
   if (radius < 0.3) {
     type = Math.random() < 0.5 ? 'rocky' : 'lava';
   }
@@ -103,7 +106,7 @@ function generateAtmosphere(type) {
 function selectRule(star, distance, prev) {
   const norm = Math.min(distance / (star.habitableZone[1] * 2), 1);
   const weights = PLANET_TYPES.map((t) => {
-    let weight = t.name === 'gas giant' ? norm : 1 - norm;
+    let weight = t.bias === 'outer' ? norm : 1 - norm;
     if (distance > t.maxDistance(star)) weight = 0;
     return { rule: t, weight: Math.max(weight, 0) };
   });
@@ -129,7 +132,13 @@ function selectRule(star, distance, prev) {
 }
 
 function generateChildren(star, body) {
-  const maxMoons = body.radius > 3 ? 5 : body.radius > 1 ? 3 : 1;
+  let maxMoons = 0;
+  for (const rule of MOON_RULES) {
+    if (body.radius > rule.minRadius) {
+      maxMoons = rule.maxMoons;
+      break;
+    }
+  }
   const count = randomInt(0, maxMoons);
   const moons = [];
   for (let i = 0; i < count; i++) {
