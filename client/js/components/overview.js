@@ -6,6 +6,9 @@ export function createOverview(onSelect, onOpenSystem) {
   overview.width = 400;
   overview.height = 400;
 
+  // All stars are drawn with the same radius for a cleaner overview
+  const STAR_RADIUS = 2;
+
   const galaxy = generateGalaxy();
   const ctx = overview.getContext('2d');
 
@@ -29,14 +32,14 @@ export function createOverview(onSelect, onOpenSystem) {
     systems.forEach(({ cx, cy, star }, idx) => {
       ctx.beginPath();
       ctx.fillStyle = star.color;
-      ctx.arc(cx, cy, star.size, 0, Math.PI * 2);
+      ctx.arc(cx, cy, STAR_RADIUS, 0, Math.PI * 2);
       ctx.fill();
 
       if (idx === hoveredIndex) {
         ctx.beginPath();
         ctx.strokeStyle = 'rgba(255,255,255,0.8)';
         ctx.lineWidth = 2;
-        ctx.arc(cx, cy, star.size + 3, 0, Math.PI * 2);
+        ctx.arc(cx, cy, STAR_RADIUS + 3, 0, Math.PI * 2);
         ctx.stroke();
       }
     });
@@ -51,7 +54,7 @@ export function createOverview(onSelect, onOpenSystem) {
     return systems.findIndex(({ cx, cy, star }) => {
       const dx = cx - x;
       const dy = cy - y;
-      return Math.sqrt(dx * dx + dy * dy) <= star.size;
+      return Math.sqrt(dx * dx + dy * dy) <= STAR_RADIUS;
     });
   }
 
