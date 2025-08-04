@@ -13,11 +13,11 @@ export function createOverview(onSelect) {
   const scaleX = overview.width / (size * 2 + 1);
   const scaleY = overview.height / (size * 2 + 1);
 
-  const stars = galaxy.systems.map(({ x, y, system }) => {
+  const systems = galaxy.systems.map(({ x, y, system }) => {
     const star = system.stars[0];
     const cx = (x + size) * scaleX;
     const cy = (y + size) * scaleY;
-    return { cx, cy, star };
+    return { cx, cy, star, system };
   });
 
   let hoveredIndex = null;
@@ -26,7 +26,7 @@ export function createOverview(onSelect) {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, overview.width, overview.height);
 
-    stars.forEach(({ cx, cy, star }, idx) => {
+    systems.forEach(({ cx, cy, star }, idx) => {
       ctx.beginPath();
       ctx.fillStyle = star.color;
       ctx.arc(cx, cy, star.size, 0, Math.PI * 2);
@@ -48,7 +48,7 @@ export function createOverview(onSelect) {
     const scaleY = overview.height / rect.height;
     const x = (event.clientX - rect.left) * scaleX;
     const y = (event.clientY - rect.top) * scaleY;
-    return stars.findIndex(({ cx, cy, star }) => {
+    return systems.findIndex(({ cx, cy, star }) => {
       const dx = cx - x;
       const dy = cy - y;
       return Math.sqrt(dx * dx + dy * dy) <= star.size;
@@ -68,7 +68,7 @@ export function createOverview(onSelect) {
   overview.addEventListener('click', (e) => {
     const idx = getStarIndex(e);
     if (idx !== -1 && typeof onSelect === 'function') {
-      onSelect(stars[idx].star);
+      onSelect(systems[idx].system);
     }
   });
 

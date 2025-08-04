@@ -12,13 +12,17 @@ export function generatePlanet(star, orbitIndex) {
     distance >= star.habitableZone[0] &&
     distance <= star.habitableZone[1];
   const orbitalPeriod = Math.sqrt(Math.pow(distance, 3) / star.mass); // in Earth years
+  const features = [];
+  if (Math.random() < 0.1) features.push('base');
+  if (Math.random() < 0.1) features.push('mine');
   return {
     type: rule.name,
     distance,
     radius,
     temperature,
     isHabitable,
-    orbitalPeriod
+    orbitalPeriod,
+    features
   };
 }
 
