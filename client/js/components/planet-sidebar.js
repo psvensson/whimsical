@@ -2,9 +2,13 @@ export function createPlanetSidebar(planet) {
   const container = document.createElement('div');
   container.className = 'planet-sidebar';
   const features = planet.features && planet.features.length ? planet.features.join(', ') : 'None';
-  const resources = Object.entries(planet.resources || {})
-    .map(([name, amount]) => `${name}: ${amount}`)
-    .join(', ') || 'None';
+  const resourceEntries = Object.entries(planet.resources || {});
+  const resourcesTable = resourceEntries.length
+    ? `<table class="resource-table"><thead><tr><th>Resource</th><th>Amount</th></tr></thead><tbody>${resourceEntries
+        .map(([name, amount]) => `<tr><td>${name}</td><td>${amount}</td></tr>`)
+        .join('')}</tbody></table>`
+    : '<p>None</p>';
+
   container.innerHTML = `
     <h2>${planet.type}</h2>
     <ul>
@@ -14,8 +18,9 @@ export function createPlanetSidebar(planet) {
       <li><strong>Habitable:</strong> ${planet.isHabitable ? 'Yes' : 'No'}</li>
       <li><strong>Orbital Period:</strong> ${planet.orbitalPeriod.toFixed(2)} years</li>
       <li><strong>Features:</strong> ${features}</li>
-      <li><strong>Resources:</strong> ${resources}</li>
     </ul>
+    <h3>Resources</h3>
+    ${resourcesTable}
   `;
   return container;
 }
