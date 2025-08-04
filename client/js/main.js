@@ -9,11 +9,9 @@ function init() {
   const main = document.createElement('div');
   main.id = 'main';
 
-  const overview = createOverview();
   const sidebar = createSidebar();
-
-  overview.addEventListener('click', () => {
-    showSidebar(sidebar, 'Details for selected item');
+  const overview = createOverview((star) => {
+    showSidebar(sidebar, star);
   });
 
   main.append(overview, sidebar);
