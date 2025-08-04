@@ -5,6 +5,10 @@ import {
   PLANET_ATMOSPHERES
 } from './data/planets.js';
 
+// Smallest possible planet radius used to determine when a moon should
+// instead be considered a planet of its own.
+const MIN_PLANET_RADIUS = Math.min(...PLANET_TYPES.map((p) => p.radius[0]));
+
 export function generatePlanet(star, orbitIndex) {
   const distance = (orbitIndex + 1) * randomRange(0.3, 1.5); // in AU
   const rule = PLANET_TYPES.find((r) => distance <= r.maxDistance(star));
@@ -69,12 +73,31 @@ function generateMoons(star, distance, planetRadius) {
   const maxMoons = planetRadius > 3 ? 5 : planetRadius > 1 ? 3 : 1;
   const count = randomInt(0, maxMoons);
   const moons = [];
+  const maxMoonRadius = Math.min(planetRadius * 0.1, MIN_PLANET_RADIUS);
   for (let i = 0; i < count; i++) {
-    const radius = randomRange(0.1, Math.min(planetRadius * 0.5, 1.5));
-    const typeRule =
-      PLANET_TYPES.find((r) => distance <= r.maxDistance(star)) || PLANET_TYPES[0];
-    const atmosphere = radius > 0.5 ? generateAtmosphere(typeRule.name) : null;
-    moons.push({ name: `Moon ${i + 1}`, radius, atmosphere });
+    if (maxMoonRadius <= 0) break;
+    const radius = randomRange(maxMoonRadius * 0.1, maxMoonRadius);
+    const resourceList = PLANET_RESOURCES['rocky'] || [];
+    const resourceScale = radius / MIN_PLANET_RADIUS;
+    const resources = resourceList.reduce((acc, res) => {
+      acc[res] = Math.floor(randomRange(0, 100 * resourceScale));
+      return acc;
+    }, {});
+    const angle = Math.random() * Math.PI * 2;
+    moons.push({
+      name: `Moon ${i + 1}`,
+      type: 'rocky',
+      distance: 0,
+      radius,
+      temperature: null,
+      isHabitable: false,
+      orbitalPeriod: null,
+      features: [],
+      angle,
+      resources,
+      atmosphere: null,
+      moons: []
+    });
   }
   return moons;
 }
