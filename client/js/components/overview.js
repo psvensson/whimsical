@@ -1,6 +1,6 @@
 import { generateGalaxy } from '../galaxy.js';
 
-export function createOverview(onSelect) {
+export function createOverview(onSelect, onOpenSystem) {
   const overview = document.createElement('canvas');
   overview.id = 'overview';
   overview.width = 400;
@@ -65,10 +65,23 @@ export function createOverview(onSelect) {
     draw();
   });
 
+  let clickTimeout;
+
   overview.addEventListener('click', (e) => {
+    clearTimeout(clickTimeout);
+    clickTimeout = setTimeout(() => {
+      const idx = getStarIndex(e);
+      if (idx !== -1 && typeof onSelect === 'function') {
+        onSelect(systems[idx].system);
+      }
+    }, 200);
+  });
+
+  overview.addEventListener('dblclick', (e) => {
+    clearTimeout(clickTimeout);
     const idx = getStarIndex(e);
-    if (idx !== -1 && typeof onSelect === 'function') {
-      onSelect(systems[idx].system);
+    if (idx !== -1 && typeof onOpenSystem === 'function') {
+      onOpenSystem(systems[idx].system);
     }
   });
 
