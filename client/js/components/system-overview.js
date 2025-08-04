@@ -51,8 +51,8 @@ export function createSystemOverview(
     planetData.forEach(({ orbitA, orbitB, e, rotation }) => {
       ctx.beginPath();
       ctx.strokeStyle = '#444';
-      const centerX = cx + orbitA * e * Math.cos(rotation);
-      const centerY = cy + orbitA * e * Math.sin(rotation);
+      const centerX = cx - orbitA * e * Math.cos(rotation);
+      const centerY = cy - orbitA * e * Math.sin(rotation);
       // Draw orbit as an ellipse with the star at one focus
       ctx.ellipse(centerX, centerY, orbitA, orbitB, rotation, 0, Math.PI * 2);
       ctx.stroke();
