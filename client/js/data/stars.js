@@ -1,7 +1,17 @@
+export const STAR_CLASS_COLORS = {
+  O: '#9bbcff',
+  B: '#aabfff',
+  A: '#cad8ff',
+  F: '#f8f7ff',
+  G: '#fff4e8',
+  K: '#ffd1a3',
+  M: '#ff4d4d'
+};
+
 export const STAR_TYPES = [
   {
+    class: 'O',
     name: 'O-type star',
-    color: '#9bbcff',
     size: 5,
     mass: [16, 100],
     luminosity: [30000, 1000000],
@@ -9,8 +19,8 @@ export const STAR_TYPES = [
     habitableZone: [100, 1000]
   },
   {
+    class: 'B',
     name: 'B-type star',
-    color: '#aabfff',
     size: 4,
     mass: [2.1, 16],
     luminosity: [25, 30000],
@@ -18,8 +28,8 @@ export const STAR_TYPES = [
     habitableZone: [5, 100]
   },
   {
+    class: 'A',
     name: 'A-type star',
-    color: '#cad8ff',
     size: 4,
     mass: [1.4, 2.1],
     luminosity: [5, 25],
@@ -27,8 +37,8 @@ export const STAR_TYPES = [
     habitableZone: [2, 5]
   },
   {
+    class: 'F',
     name: 'F-type star',
-    color: '#f8f7ff',
     size: 3,
     mass: [1.04, 1.4],
     luminosity: [1.5, 5],
@@ -36,8 +46,8 @@ export const STAR_TYPES = [
     habitableZone: [1.3, 2.2]
   },
   {
+    class: 'G',
     name: 'G-type star',
-    color: '#fff4e8',
     size: 3,
     mass: [0.8, 1.04],
     luminosity: [0.6, 1.5],
@@ -45,8 +55,8 @@ export const STAR_TYPES = [
     habitableZone: [0.95, 1.4]
   },
   {
+    class: 'K',
     name: 'K-type star',
-    color: '#ffd1a3',
     size: 2,
     mass: [0.45, 0.8],
     luminosity: [0.08, 0.6],
@@ -54,8 +64,8 @@ export const STAR_TYPES = [
     habitableZone: [0.38, 0.8]
   },
   {
+    class: 'M',
     name: 'M-type star',
-    color: '#ff4d4d',
     size: 2,
     mass: [0.08, 0.45],
     luminosity: [0.0001, 0.08],

@@ -44,8 +44,10 @@ export function createOverview(onSelect) {
 
   function getStarIndex(event) {
     const rect = overview.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const scaleX = overview.width / rect.width;
+    const scaleY = overview.height / rect.height;
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
     return stars.findIndex(({ cx, cy, star }) => {
       const dx = cx - x;
       const dy = cy - y;
