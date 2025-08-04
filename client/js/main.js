@@ -1,6 +1,7 @@
 import { createHeader } from './components/header.js';
 import { createOverview } from './components/overview.js';
-import { createSidebar, showSidebar } from './components/sidebar.js';
+import { createSidebar, setSidebarContent } from './components/sidebar.js';
+import { createStarSidebar } from './components/star-sidebar.js';
 
 function init() {
   const app = document.getElementById('app');
@@ -11,7 +12,8 @@ function init() {
 
   const sidebar = createSidebar();
   const overview = createOverview((star) => {
-    showSidebar(sidebar, star);
+    const starContent = createStarSidebar(star);
+    setSidebarContent(sidebar, starContent);
   });
 
   main.append(overview, sidebar);

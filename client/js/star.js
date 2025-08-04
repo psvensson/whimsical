@@ -1,10 +1,11 @@
-import { STAR_TYPES } from './data/stars.js';
+import { STAR_TYPES, STAR_CLASS_COLORS } from './data/stars.js';
 
 export function generateStar() {
   const type = STAR_TYPES[randomInt(0, STAR_TYPES.length - 1)];
   return {
+    class: type.class,
     name: type.name,
-    color: type.color,
+    color: STAR_CLASS_COLORS[type.class],
     size: type.size,
     mass: randomRange(type.mass[0], type.mass[1]),
     luminosity: randomRange(type.luminosity[0], type.luminosity[1]),
