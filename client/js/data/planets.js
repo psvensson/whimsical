@@ -40,12 +40,27 @@ export const PLANET_FEATURES = [
   { name: 'mine', chance: 0.1 }
 ];
 
-export const PLANET_RESOURCES = [
-  'iron',
-  'cobalt',
-  'uranium',
-  'carbon',
-  'silicon',
-  'nickel',
-  'water'
-];
+export const PLANET_RESOURCES = {
+  lava: ['sulfur', 'silicates', 'iron'],
+  rocky: ['iron', 'cobalt', 'uranium', 'carbon', 'silicon', 'nickel', 'water'],
+  terrestrial: [
+    'iron',
+    'cobalt',
+    'uranium',
+    'carbon',
+    'silicon',
+    'nickel',
+    'water',
+    'oxygen'
+  ],
+  ice: ['water', 'methane', 'ammonia', 'nitrogen'],
+  'gas giant': ['hydrogen', 'helium', 'methane', 'ammonia']
+};
+
+export const PLANET_ATMOSPHERES = {
+  lava: [],
+  rocky: ['carbon dioxide', 'nitrogen'],
+  terrestrial: ['nitrogen', 'oxygen', 'argon'],
+  ice: ['nitrogen', 'methane'],
+  'gas giant': ['hydrogen', 'helium', 'methane', 'ammonia']
+};
