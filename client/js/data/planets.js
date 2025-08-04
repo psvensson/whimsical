@@ -26,3 +26,16 @@ export const PLANET_TYPES = [
     radius: [3, 12]
   }
 ];
+
+export const PLANET_COLORS = {
+  lava: '#ff4500',
+  rocky: '#b0b0b0',
+  terrestrial: '#2ecc71',
+  ice: '#87cefa',
+  'gas giant': '#f1c40f'
+};
+
+export const PLANET_FEATURES = [
+  { name: 'base', chance: 0.1 },
+  { name: 'mine', chance: 0.1 }
+];

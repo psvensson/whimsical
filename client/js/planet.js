@@ -1,4 +1,4 @@
-import { PLANET_TYPES } from './data/planets.js';
+import { PLANET_TYPES, PLANET_FEATURES } from './data/planets.js';
 
 export function generatePlanet(star, orbitIndex) {
   const distance = (orbitIndex + 1) * randomRange(0.3, 1.5); // in AU
@@ -12,9 +12,10 @@ export function generatePlanet(star, orbitIndex) {
     distance >= star.habitableZone[0] &&
     distance <= star.habitableZone[1];
   const orbitalPeriod = Math.sqrt(Math.pow(distance, 3) / star.mass); // in Earth years
-  const features = [];
-  if (Math.random() < 0.1) features.push('base');
-  if (Math.random() < 0.1) features.push('mine');
+  const features = PLANET_FEATURES.filter((f) => Math.random() < f.chance).map(
+    (f) => f.name
+  );
+  const angle = Math.random() * Math.PI * 2;
   return {
     type: rule.name,
     distance,
@@ -22,7 +23,8 @@ export function generatePlanet(star, orbitIndex) {
     temperature,
     isHabitable,
     orbitalPeriod,
-    features
+    features,
+    angle
   };
 }
 
