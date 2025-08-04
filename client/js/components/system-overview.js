@@ -38,6 +38,16 @@ export function createSystemOverview(
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    // Draw orbits first so they appear beneath planets
+    ctx.lineWidth = 1;
+    planetData.forEach(({ orbitRadius }) => {
+      ctx.beginPath();
+      ctx.strokeStyle = '#444';
+      ctx.arc(cx, cy, orbitRadius, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
+    // Draw planets and their feature icons
     planetData.forEach(({ planet, px, py, planetRadius }) => {
       ctx.beginPath();
       ctx.fillStyle = PLANET_COLORS[planet.type] || '#fff';
@@ -63,19 +73,13 @@ export function createSystemOverview(
       }
     });
 
-    ctx.lineWidth = 1;
-    planetData.forEach(({ orbitRadius }) => {
-      ctx.beginPath();
-      ctx.strokeStyle = '#444';
-      ctx.arc(cx, cy, orbitRadius, 0, Math.PI * 2);
-      ctx.stroke();
-    });
-
+    // Draw the star
     ctx.beginPath();
     ctx.fillStyle = star.color;
     ctx.arc(cx, cy, starRadius, 0, Math.PI * 2);
     ctx.fill();
 
+    // Highlight hovered planet if applicable
     if (hoveredIndex !== null) {
       const { px, py, planetRadius } = planetData[hoveredIndex];
       ctx.beginPath();
@@ -100,7 +104,8 @@ export function createSystemOverview(
   }
 
   canvas.addEventListener('mousemove', (e) => {
-    hoveredIndex = getPlanetIndex(e);
+    const idx = getPlanetIndex(e);
+    hoveredIndex = idx === -1 ? null : idx;
     draw();
   });
 
