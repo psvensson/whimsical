@@ -16,10 +16,10 @@ export function createPlanetSidebar(planet) {
     : '<p>None</p>';
   const moons = planet.moons || [];
   const moonsTable = moons.length
-    ? `<table class="info-table"><thead><tr><th>Moon</th><th>Radius</th><th>Atmosphere</th></tr></thead><tbody>${moons
+    ? `<table class="info-table"><thead><tr><th>Moon</th><th>Type</th><th>Radius</th><th>Atmosphere</th></tr></thead><tbody>${moons
         .map(
-          (m) =>
-            `<tr><td>${m.name}</td><td>${m.radius.toFixed(2)}</td><td>${m.atmosphere ? 'Yes' : 'No'}</td></tr>`
+          (m, i) =>
+            `<tr><td>${m.name || `Moon ${i + 1}`}</td><td>${m.type}</td><td>${m.radius.toFixed(2)}</td><td>${m.atmosphere ? 'Yes' : 'No'}</td></tr>`
         )
         .join('')}</tbody></table>`
     : '<p>None</p>';
