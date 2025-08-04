@@ -18,3 +18,7 @@ There should be a docker-compose file which can serve the front-end using npx ht
 The server should have proper tests for all functionality and tests should spin up a new clean DB for each test run.
 
 
+
+## Client
+
+A minimal client scaffold is available under `client/`. Open `client/index.html` in a browser to see the placeholder interface.
