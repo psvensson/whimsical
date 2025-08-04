@@ -1,35 +1,25 @@
+import { PLANET_TYPES } from './data/planets.js';
+
 export function generatePlanet(star, orbitIndex) {
   const distance = (orbitIndex + 1) * randomRange(0.3, 1.5); // in AU
-  const inner = star.habitableZone[0];
-  const outer = star.habitableZone[1];
+  const rule = PLANET_TYPES.find((r) => distance <= r.maxDistance(star));
+  const radius = randomRange(rule.radius[0], rule.radius[1]);
 
-  let type;
-  if (distance < inner * 0.5) {
-    type = 'lava';
-  } else if (distance < inner) {
-    type = 'rocky';
-  } else if (distance <= outer) {
-    type = 'terrestrial';
-  } else if (distance <= outer * 2) {
-    type = 'ice';
-  } else {
-    type = 'gas giant';
-  }
-
-  let radius;
-  if (type === 'gas giant') {
-    radius = randomRange(3, 12);
-  } else if (type === 'ice') {
-    radius = randomRange(0.5, 3);
-  } else {
-    radius = randomRange(0.3, 2);
-  }
-
-  const temperature = 278 * Math.pow(star.luminosity, 0.25) / Math.sqrt(distance);
+  const temperature =
+    278 * Math.pow(star.luminosity, 0.25) / Math.sqrt(distance);
   const isHabitable =
-    type === 'terrestrial' && distance >= inner && distance <= outer;
+    !!rule.habitable &&
+    distance >= star.habitableZone[0] &&
+    distance <= star.habitableZone[1];
   const orbitalPeriod = Math.sqrt(Math.pow(distance, 3) / star.mass); // in Earth years
-  return { type, distance, radius, temperature, isHabitable, orbitalPeriod };
+  return {
+    type: rule.name,
+    distance,
+    radius,
+    temperature,
+    isHabitable,
+    orbitalPeriod
+  };
 }
 
 function randomRange(min, max) {
