@@ -24,12 +24,20 @@ export function createSystemOverview(
 
   const starRadius = star.size * 2;
   const planetData = planets.map((planet) => {
-    const orbitRadius = planet.distance * scale;
-    const angle = Math.random() * Math.PI * 2;
-    const px = cx + orbitRadius * Math.cos(angle);
-    const py = cy + orbitRadius * Math.sin(angle);
+    const orbitA = planet.distance * scale;
+    const e = planet.eccentricity || 0;
+    const orbitB = orbitA * Math.sqrt(1 - e * e);
+    const rotation = planet.orbitRotation || 0;
+    const theta = planet.angle;
+    const r = (orbitA * (1 - e * e)) / (1 + e * Math.cos(theta));
+    const x = r * Math.cos(theta);
+    const y = r * Math.sin(theta);
+    const xRot = x * Math.cos(rotation) - y * Math.sin(rotation);
+    const yRot = x * Math.sin(rotation) + y * Math.cos(rotation);
+    const px = cx + xRot;
+    const py = cy + yRot;
     const planetRadius = Math.min(planet.radius * 3, starRadius - 1);
-    return { planet, orbitRadius, angle, px, py, planetRadius };
+    return { planet, orbitA, orbitB, e, rotation, theta, px, py, planetRadius };
   });
 
   let hoveredIndex = null;
@@ -40,10 +48,13 @@ export function createSystemOverview(
 
     // Draw orbits first so they appear beneath planets
     ctx.lineWidth = 1;
-    planetData.forEach(({ orbitRadius }) => {
+    planetData.forEach(({ orbitA, orbitB, e, rotation }) => {
       ctx.beginPath();
       ctx.strokeStyle = '#444';
-      ctx.arc(cx, cy, orbitRadius, 0, Math.PI * 2);
+      const centerX = cx + orbitA * e * Math.cos(rotation);
+      const centerY = cy + orbitA * e * Math.sin(rotation);
+      // Draw orbit as an ellipse with the star at one focus
+      ctx.ellipse(centerX, centerY, orbitA, orbitB, rotation, 0, Math.PI * 2);
       ctx.stroke();
     });
 

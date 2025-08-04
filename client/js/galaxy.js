@@ -1,13 +1,13 @@
 import { generateStar } from './star.js';
-import { generatePlanet } from './planet.js';
+import { generateBody } from './planet.js';
 
 export function generateStarSystem() {
   const star = generateStar();
   const planetCount = randomInt(0, 10);
-  const planets = Array.from(
-    { length: planetCount },
-    (_, i) => generatePlanet(star, i)
-  );
+  const planets = [];
+  for (let i = 0; i < planetCount; i++) {
+    planets.push(generateBody(star, i, null, planets));
+  }
   return { stars: [star], planets };
 }
 

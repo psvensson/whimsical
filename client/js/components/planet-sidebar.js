@@ -19,7 +19,7 @@ export function createPlanetSidebar(planet) {
     ? `<table class="info-table"><thead><tr><th>Moon</th><th>Type</th><th>Radius</th><th>Atmosphere</th></tr></thead><tbody>${moons
         .map(
           (m, i) =>
-            `<tr><td>${m.name || `Moon ${i + 1}`}</td><td>${m.type}</td><td>${m.radius.toFixed(2)}</td><td>${m.atmosphere ? 'Yes' : 'No'}</td></tr>`
+            `<tr><td>${m.name || `Moon ${i + 1}`}</td><td>${m.type}</td><td>${m.radius.toFixed(2)}</td><td>${m.atmosphere ? formatAtmosphere(m.atmosphere) : 'None'}</td></tr>`
         )
         .join('')}</tbody></table>`
     : '<p>None</p>';
@@ -32,6 +32,7 @@ export function createPlanetSidebar(planet) {
       <li><strong>Temperature:</strong> ${planet.temperature.toFixed(2)} K</li>
       <li><strong>Habitable:</strong> ${planet.isHabitable ? 'Yes' : 'No'}</li>
       <li><strong>Orbital Period:</strong> ${planet.orbitalPeriod.toFixed(2)} years</li>
+      <li><strong>Eccentricity:</strong> ${planet.eccentricity.toFixed(2)}</li>
       <li><strong>Features:</strong> ${features}</li>
     </ul>
     <h3>Atmosphere</h3>
@@ -42,4 +43,10 @@ export function createPlanetSidebar(planet) {
     ${moonsTable}
   `;
   return container;
+}
+
+function formatAtmosphere(atmo) {
+  return Object.entries(atmo)
+    .map(([gas, percent]) => `${gas} (${percent}%)`)
+    .join(', ');
 }
