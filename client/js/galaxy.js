@@ -11,7 +11,7 @@ export function generateStarSystem() {
   return { stars: [star], planets };
 }
 
-export function generateGalaxy(size = 500, chance = 0.01) {
+export function generateGalaxy(size = 500, chance = 0.001) {
   const systems = [];
   for (let x = -size; x <= size; x++) {
     for (let y = -size; y <= size; y++) {
