@@ -1,10 +1,4 @@
-const PLANET_COLORS = {
-  lava: '#ff4500',
-  rocky: '#b0b0b0',
-  terrestrial: '#2ecc71',
-  ice: '#87cefa',
-  'gas giant': '#f1c40f'
-};
+import { PLANET_COLORS } from '../data/planets.js';
 
 export function createSystemOverview(
   system,
@@ -30,10 +24,11 @@ export function createSystemOverview(
 
   const planetData = planets.map((planet) => {
     const orbitRadius = planet.distance * scale;
-    const px = cx + orbitRadius;
-    const py = cy;
-    const planetRadius = Math.max(2, planet.radius * 3);
-    return { planet, orbitRadius, px, py, planetRadius };
+    const angle = planet.angle || Math.random() * Math.PI * 2;
+    const px = cx + orbitRadius * Math.cos(angle);
+    const py = cy + orbitRadius * Math.sin(angle);
+    const planetRadius = planet.radius * 3;
+    return { planet, orbitRadius, angle, px, py, planetRadius };
   });
 
   let hoveredIndex = null;
