@@ -1,4 +1,11 @@
-import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator';
+// Import the module using a relative path so that the browser can resolve it
+// without a bundler or import maps. This fixes the "bare specifier" error
+// when `name-generator.js` is loaded in the browser.
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  animals
+} from '../../node_modules/unique-names-generator/dist/index.m.js';
 
 export function generateUniqueName() {
   return uniqueNamesGenerator({
