@@ -6,7 +6,7 @@ export function createGalaxyOverview(
   onOpenSystem,
   selectedSystem = null
 ) {
-  const STAR_RADIUS = 8;
+  const STAR_RADIUS = 16;
   const size = galaxy.size;
 
   const systems = galaxy.systems.map(({ x, y, system }) => ({
@@ -49,7 +49,7 @@ export function createGalaxyOverview(
         ctx.beginPath();
         ctx.strokeStyle = 'rgba(255,255,255,0.8)';
         ctx.lineWidth = 2;
-        ctx.arc(cx, cy, STAR_RADIUS + 3, 0, Math.PI * 2);
+        ctx.arc(cx, cy, STAR_RADIUS + 6, 0, Math.PI * 2);
         ctx.stroke();
       }
     });

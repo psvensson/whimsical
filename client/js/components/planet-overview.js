@@ -9,8 +9,8 @@ export function createPlanetOverview(
   height = 400
 ) {
   const objects = planet.moons || [];
-  const PLANET_RADIUS = 20; // constant radius for planet
-  const OBJECT_RADIUS = 8; // constant radius for moons and bases
+  const PLANET_RADIUS = 40; // constant radius for planet
+  const OBJECT_RADIUS = 16; // constant radius for moons and bases
 
   let planetRadius = PLANET_RADIUS;
   let objectData = [];
@@ -73,10 +73,20 @@ export function createPlanetOverview(
       if (obj.type === 'base') {
         ctx.fillStyle = '#fff';
         ctx.fillRect(px - objRadius, py - objRadius, objRadius * 2, objRadius * 2);
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.font = '12px sans-serif';
+        ctx.fillText('base', px, py - objRadius - 8);
       } else {
         ctx.fillStyle = PLANET_COLORS[obj.type] || '#fff';
         ctx.arc(px, py, objRadius, 0, Math.PI * 2);
         ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.font = '12px sans-serif';
+        ctx.fillText(`${obj.type} ${obj.kind}`, px, py - objRadius - 8);
       }
     });
 
@@ -85,7 +95,7 @@ export function createPlanetOverview(
     ctx.arc(cx, cy, planetRadius, 0, Math.PI * 2);
     ctx.fill();
 
-    let iconX = cx + planetRadius + 4;
+    let iconX = cx + planetRadius + 8;
     const iconY = cy;
     if (planet.features) {
       planet.features
@@ -94,20 +104,26 @@ export function createPlanetOverview(
           ctx.fillStyle = '#fff';
           if (f === 'mine') {
             ctx.beginPath();
-            ctx.moveTo(iconX, iconY - 3);
-            ctx.lineTo(iconX + 4, iconY - 3);
-            ctx.lineTo(iconX + 2, iconY + 1);
+            ctx.moveTo(iconX, iconY - 6);
+            ctx.lineTo(iconX + 8, iconY - 6);
+            ctx.lineTo(iconX + 4, iconY + 2);
             ctx.fill();
           }
-          iconX += 6;
+          iconX += 12;
         });
     }
     if (planet.moons && planet.moons.length) {
       ctx.beginPath();
       ctx.fillStyle = '#fff';
-      ctx.arc(iconX + 2, iconY, 2, 0, Math.PI * 2);
+      ctx.arc(iconX + 4, iconY, 4, 0, Math.PI * 2);
       ctx.fill();
     }
+
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.font = '12px sans-serif';
+    ctx.fillText(`${planet.type} planet`, cx, cy - planetRadius - 8);
 
     if (hoveredIndex !== null) {
       const { px, py, objRadius, obj } = objectData[hoveredIndex];
@@ -115,9 +131,9 @@ export function createPlanetOverview(
       ctx.strokeStyle = 'rgba(255,255,255,0.8)';
       ctx.lineWidth = 2;
       if (obj.type === 'base') {
-        ctx.strokeRect(px - objRadius - 2, py - objRadius - 2, objRadius * 2 + 4, objRadius * 2 + 4);
+        ctx.strokeRect(px - objRadius - 4, py - objRadius - 4, objRadius * 2 + 8, objRadius * 2 + 8);
       } else {
-        ctx.arc(px, py, objRadius + 3, 0, Math.PI * 2);
+        ctx.arc(px, py, objRadius + 6, 0, Math.PI * 2);
         ctx.stroke();
       }
     }

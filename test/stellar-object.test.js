@@ -101,3 +101,17 @@ test('planet with five moons has unique moon radii', () => {
     }
   }
 });
+
+test('generated bodies include kind property', () => {
+  const star = generateStar();
+  star.planets.forEach((p) => {
+    assert.equal(p.kind, 'planet');
+    p.moons.forEach((m) => {
+      if (m.type === 'base') {
+        assert.equal(m.kind, 'base');
+      } else {
+        assert.equal(m.kind, 'moon');
+      }
+    });
+  });
+});

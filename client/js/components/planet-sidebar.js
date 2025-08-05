@@ -22,13 +22,13 @@ export function createPlanetSidebar(planet) {
     ? `<table class="info-table"><thead><tr><th>Name</th><th>Type</th><th>Radius</th><th>Atmosphere</th></tr></thead><tbody>${moons
         .map(
           (m, i) =>
-            `<tr><td>${m.name || `Object ${i + 1}`}</td><td>${m.type}</td><td>${m.radius.toFixed(2)}</td><td>${m.atmosphere ? formatAtmosphere(m.atmosphere) : 'None'}</td></tr>`
+            `<tr><td>${m.name || `Object ${i + 1}`}</td><td>${m.type} ${m.kind}</td><td>${m.radius.toFixed(2)}</td><td>${m.atmosphere ? formatAtmosphere(m.atmosphere) : 'None'}</td></tr>`
         )
         .join('')}</tbody></table>`
     : '<p>None</p>';
 
   container.innerHTML = `
-    <h2>${planet.type}</h2>
+    <h2>${planet.type} ${planet.kind}</h2>
     <ul>
       <li><strong>Distance:</strong> ${planet.distance.toFixed(2)} AU</li>
       <li><strong>Radius:</strong> ${planet.radius.toFixed(2)}</li>
