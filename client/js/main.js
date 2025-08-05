@@ -1,5 +1,5 @@
 import { createHeader } from './components/header.js';
-import { createOverview } from './components/overview.js';
+import { createGalaxyOverview } from './components/galaxy-overview.js';
 import { createSidebar, setSidebarContent, clearSidebar } from './components/sidebar.js';
 import { createStarSidebar } from './components/star-sidebar.js';
 import { createSystemOverview } from './components/system-overview.js';
@@ -16,7 +16,7 @@ function init() {
   let overview;
 
   function showGalaxy() {
-    const galaxyOverview = createOverview(
+    const galaxyOverview = createGalaxyOverview(
       (system) => {
         const starContent = createStarSidebar(system, showSystem);
         setSidebarContent(sidebar, starContent);
@@ -40,8 +40,8 @@ function init() {
         const planetContent = createPlanetSidebar(planet);
         setSidebarContent(sidebar, planetContent);
       },
-      overview.width,
-      overview.height
+      overview.offsetWidth,
+      overview.offsetHeight
     );
     main.replaceChild(systemView, overview);
     overview = systemView;
