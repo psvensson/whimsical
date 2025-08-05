@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 
-import { createOverview } from '../client/js/components/overview.js';
+import { createOverview } from '../js/components/overview.js';
 
 function setupDom() {
   const dom = new JSDOM('<!doctype html><html><body></body></html>', {

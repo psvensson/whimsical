@@ -8,7 +8,7 @@ import {
   uniqueNamesGenerator,
   adjectives,
   animals
-} from '../../node_modules/unique-names-generator/dist/index.modern.js';
+} from '../node_modules/unique-names-generator/dist/index.modern.js';
 
 export function generateUniqueName() {
   return uniqueNamesGenerator({

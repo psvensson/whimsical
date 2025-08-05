@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { generateStar } from '../client/js/star.js';
+import { generateStar } from '../js/star.js';
 
 // Ensure that generated stars receive a readable two-word name.
 test('generateStar assigns a two-word name', () => {
