@@ -1,9 +1,12 @@
-import { generateGalaxy } from '../galaxy.js';
 import { createOverview } from './overview.js';
 
-export function createGalaxyOverview(onSelect, onOpenSystem) {
+export function createGalaxyOverview(
+  galaxy,
+  onSelect,
+  onOpenSystem,
+  selectedSystem = null
+) {
   const STAR_RADIUS = 8;
-  const galaxy = generateGalaxy();
   const size = galaxy.size;
 
   const systems = galaxy.systems.map(({ x, y, system }) => ({
@@ -15,6 +18,8 @@ export function createGalaxyOverview(onSelect, onOpenSystem) {
 
   let starPositions = [];
   let hoveredIndex = null;
+  let selectedIndex =
+    selectedSystem ? systems.findIndex((s) => s.system === selectedSystem) : null;
   let canvas;
   let ctx;
 
@@ -40,7 +45,7 @@ export function createGalaxyOverview(onSelect, onOpenSystem) {
       ctx.arc(cx, cy, STAR_RADIUS, 0, Math.PI * 2);
       ctx.fill();
 
-      if (idx === hoveredIndex) {
+      if (idx === hoveredIndex || idx === selectedIndex) {
         ctx.beginPath();
         ctx.strokeStyle = 'rgba(255,255,255,0.8)';
         ctx.lineWidth = 2;
@@ -86,8 +91,12 @@ export function createGalaxyOverview(onSelect, onOpenSystem) {
     clearTimeout(clickTimeout);
     clickTimeout = setTimeout(() => {
       const idx = getStarIndex(e);
-      if (idx !== -1 && typeof onSelect === 'function') {
-        onSelect(systems[idx].system);
+      if (idx !== -1) {
+        selectedIndex = idx;
+        if (typeof onSelect === 'function') {
+          onSelect(systems[idx].system);
+        }
+        draw();
       }
     }, 200);
   });
@@ -95,8 +104,12 @@ export function createGalaxyOverview(onSelect, onOpenSystem) {
   canvas.addEventListener('dblclick', (e) => {
     clearTimeout(clickTimeout);
     const idx = getStarIndex(e);
-    if (idx !== -1 && typeof onOpenSystem === 'function') {
-      onOpenSystem(systems[idx].system);
+    if (idx !== -1) {
+      selectedIndex = idx;
+      draw();
+      if (typeof onOpenSystem === 'function') {
+        onOpenSystem(systems[idx].system);
+      }
     }
   });
 
