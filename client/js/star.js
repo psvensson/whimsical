@@ -1,12 +1,14 @@
 import { STAR_TYPES, STAR_CLASS_COLORS } from './data/stars.js';
 import { generateStellarObject, randomInt, randomRange, StellarObject } from './stellar-object.js';
+import { generateUniqueName } from './name-generator.js';
 
 export class Star extends StellarObject {
   constructor() {
     const type = STAR_TYPES[randomInt(0, STAR_TYPES.length - 1)];
     super({
       class: type.class,
-      name: type.name,
+      typeName: type.name,
+      name: generateUniqueName(),
       color: STAR_CLASS_COLORS[type.class],
       size: type.size,
       mass: randomRange(type.mass[0], type.mass[1]),
