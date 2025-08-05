@@ -3,6 +3,7 @@ export function createStarSidebar(system, onGoToSystem) {
   const container = document.createElement('div');
   container.className = 'star-sidebar';
   container.innerHTML = `
+    <div class="sidebar-label">Star System</div>
     <h2 style="color:${star.color}">${star.name}</h2>
     <ul>
       <li><strong>Class:</strong> ${star.class}</li>

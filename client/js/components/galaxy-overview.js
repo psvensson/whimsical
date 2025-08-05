@@ -58,6 +58,7 @@ export function createGalaxyOverview(
   const overview = createOverview({
     update,
     draw,
+    label: 'Galaxy',
   });
 
   canvas = overview.canvas;

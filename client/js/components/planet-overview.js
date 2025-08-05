@@ -142,6 +142,7 @@ export function createPlanetOverview(
   const overview = createOverview({
     update: updateLayout,
     draw,
+    label: 'Planet',
   });
 
   canvas = overview.canvas;

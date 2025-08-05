@@ -48,7 +48,12 @@ function init() {
     const systemView = createSystemOverview(
       system,
       () => showGalaxy(system),
+      (planet) => {
+        const planetContent = createPlanetSidebar(planet);
+        setSidebarContent(sidebar, planetContent);
+      },
       (planet) => showPlanet(system, planet),
+      selectedPlanet,
       overview.offsetWidth,
       overview.offsetHeight
     );

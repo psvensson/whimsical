@@ -4,7 +4,9 @@ import { createOverview } from './overview.js';
 export function createSystemOverview(
   system,
   onBack,
-  onSelectPlanet,
+  onSelect,
+  onOpenPlanet,
+  selectedPlanet = null,
   width = 400,
   height = 400
 ) {
@@ -19,6 +21,8 @@ export function createSystemOverview(
   let starRadius = baseStarRadius;
   let planetData = [];
   let hoveredIndex = null;
+  let selectedIndex =
+    selectedPlanet ? planets.findIndex((p) => p === selectedPlanet) : null;
   let canvas;
   let ctx;
 
@@ -81,7 +85,7 @@ export function createSystemOverview(
       }
     });
 
-    planetData.forEach(({ planet, px, py, planetRadius }) => {
+    planetData.forEach(({ planet, px, py, planetRadius }, idx) => {
       ctx.beginPath();
       ctx.fillStyle = PLANET_COLORS[planet.type] || '#fff';
       ctx.arc(px, py, planetRadius, 0, Math.PI * 2);
@@ -116,26 +120,26 @@ export function createSystemOverview(
       ctx.textBaseline = 'bottom';
       ctx.font = '12px sans-serif';
       ctx.fillText(`${planet.type} planet`, px, py - planetRadius - 8);
+
+      if (idx === hoveredIndex || idx === selectedIndex) {
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+        ctx.lineWidth = 2;
+        ctx.arc(px, py, planetRadius + 6, 0, Math.PI * 2);
+        ctx.stroke();
+      }
     });
 
     ctx.beginPath();
     ctx.fillStyle = star.color;
     ctx.arc(cx, cy, starRadius, 0, Math.PI * 2);
     ctx.fill();
-
-    if (hoveredIndex !== null) {
-      const { px, py, planetRadius } = planetData[hoveredIndex];
-      ctx.beginPath();
-      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-      ctx.lineWidth = 2;
-      ctx.arc(px, py, planetRadius + 6, 0, Math.PI * 2);
-      ctx.stroke();
-    }
   }
 
   const overview = createOverview({
     update: updateLayout,
     draw,
+    label: 'Star System',
   });
 
   canvas = overview.canvas;
@@ -166,10 +170,31 @@ export function createSystemOverview(
     draw();
   });
 
+  let clickTimeout;
+
   canvas.addEventListener('click', (e) => {
+    clearTimeout(clickTimeout);
+    clickTimeout = setTimeout(() => {
+      const idx = getPlanetIndex(e);
+      if (idx !== -1) {
+        selectedIndex = idx;
+        if (typeof onSelect === 'function') {
+          onSelect(planetData[idx].planet);
+        }
+        draw();
+      }
+    }, 200);
+  });
+
+  canvas.addEventListener('dblclick', (e) => {
+    clearTimeout(clickTimeout);
     const idx = getPlanetIndex(e);
-    if (idx !== -1 && typeof onSelectPlanet === 'function') {
-      onSelectPlanet(planetData[idx].planet);
+    if (idx !== -1) {
+      selectedIndex = idx;
+      draw();
+      if (typeof onOpenPlanet === 'function') {
+        onOpenPlanet(planetData[idx].planet);
+      }
     }
   });
 
