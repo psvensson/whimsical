@@ -9,10 +9,10 @@ export function createPlanetOverview(
   height = 400
 ) {
   const objects = planet.moons || [];
-  const PLANET_SCALE = 20;
-  const OBJECT_SCALE = 6;
+  const PLANET_RADIUS = 20; // constant radius for planet
+  const OBJECT_RADIUS = 8; // constant radius for moons and bases
 
-  let planetRadius = planet.radius * PLANET_SCALE;
+  let planetRadius = PLANET_RADIUS;
   let objectData = [];
   let hoveredIndex = null;
   let canvas;
@@ -25,12 +25,12 @@ export function createPlanetOverview(
       ...objects.map((o) => (o.orbitDistance || o.distance - planet.distance) * (1 + (o.eccentricity || 0))),
       1
     );
+    planetRadius = Math.max(PLANET_RADIUS * zoom, 0);
     const scaleBase = Math.max(
       (Math.min(canvas.width, canvas.height) / 2 - planetRadius - 20) / maxOrbit,
       0.1
     );
     const scale = scaleBase * zoom;
-    planetRadius = Math.max(planet.radius * PLANET_SCALE * zoom, 0);
     objectData = objects.map((obj) => {
       const dist = obj.orbitDistance || obj.distance - planet.distance;
       const orbitA = Math.max(dist * scale, 0);
@@ -45,10 +45,7 @@ export function createPlanetOverview(
       const yRot = x * Math.sin(rotation) + y * Math.cos(rotation);
       const px = cx + xRot;
       const py = cy + yRot;
-      const objRadius = Math.max(
-        0,
-        Math.min(obj.radius * OBJECT_SCALE * zoom, planetRadius / 4)
-      );
+      const objRadius = Math.max(OBJECT_RADIUS * zoom, 0);
       return { obj, orbitA, orbitB, e, rotation, theta, px, py, objRadius };
     });
   }
@@ -88,9 +85,9 @@ export function createPlanetOverview(
     ctx.arc(cx, cy, planetRadius, 0, Math.PI * 2);
     ctx.fill();
 
+    let iconX = cx + planetRadius + 4;
+    const iconY = cy;
     if (planet.features) {
-      let iconX = cx + planetRadius + 4;
-      const iconY = cy;
       planet.features
         .filter((f) => f !== 'base')
         .forEach((f) => {
@@ -104,6 +101,12 @@ export function createPlanetOverview(
           }
           iconX += 6;
         });
+    }
+    if (planet.moons && planet.moons.length) {
+      ctx.beginPath();
+      ctx.fillStyle = '#fff';
+      ctx.arc(iconX + 2, iconY, 2, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     if (hoveredIndex !== null) {
