@@ -30,7 +30,8 @@ export function createPlanetSidebar(planet) {
 
   container.innerHTML = `
     <div class="sidebar-label">${labelText}</div>
-    <h2>${planet.type} ${planet.kind}</h2>
+    <h2>${planet.name}</h2>
+    <div class="object-type">${planet.type} ${planet.kind}</div>
     <ul>
       <li><strong>Distance:</strong> ${planet.distance.toFixed(2)} AU</li>
       <li><strong>Radius:</strong> ${planet.radius.toFixed(2)}</li>

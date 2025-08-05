@@ -44,9 +44,24 @@ export function toRoman(num) {
   return result;
 }
 
-export function generateBodyName(parentName, orbitIndex) {
-  if (Math.random() < 0.3) {
-    return generateUniqueName();
+export function generateBodyName(starName, orbitIndex, parent = null) {
+  if (!parent) {
+    // planet naming: 70% star name + numeral, 30% unique
+    if (Math.random() < 0.3) {
+      return generateUniqueName();
+    }
+    return `${starName} ${toRoman(orbitIndex + 1)}`;
   }
-  return `${parentName} ${toRoman(orbitIndex + 1)}`;
+
+  const planetHasOwnName = !parent.name.startsWith(`${starName} `);
+  if (planetHasOwnName) {
+    // moon around a uniquely named planet: 70% planet name + numeral
+    if (Math.random() < 0.3) {
+      return generateUniqueName();
+    }
+    return `${parent.name} ${toRoman(orbitIndex + 1)}`;
+  }
+
+  // moon around a star-named planet always has its own name
+  return generateUniqueName();
 }

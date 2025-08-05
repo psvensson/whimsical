@@ -77,7 +77,7 @@ export function createPlanetOverview(
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.font = '12px sans-serif';
-        ctx.fillText('base', px, py - objRadius - 8);
+        ctx.fillText(obj.name, px, py - objRadius - 8);
       } else {
         ctx.fillStyle = PLANET_COLORS[obj.type] || '#fff';
         ctx.arc(px, py, objRadius, 0, Math.PI * 2);
@@ -86,7 +86,7 @@ export function createPlanetOverview(
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.font = '12px sans-serif';
-        ctx.fillText(`${obj.type} ${obj.kind}`, px, py - objRadius - 8);
+        ctx.fillText(obj.name, px, py - objRadius - 8);
       }
     });
 
@@ -123,7 +123,7 @@ export function createPlanetOverview(
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.font = '12px sans-serif';
-    ctx.fillText(`${planet.type} planet`, cx, cy - planetRadius - 8);
+    ctx.fillText(planet.name, cx, cy - planetRadius - 8);
 
     if (hoveredIndex !== null) {
       const { px, py, objRadius, obj } = objectData[hoveredIndex];
@@ -142,7 +142,7 @@ export function createPlanetOverview(
   const overview = createOverview({
     update: updateLayout,
     draw,
-    label: 'Planet',
+    label: planet.name,
   });
 
   canvas = overview.canvas;
