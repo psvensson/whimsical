@@ -37,6 +37,33 @@ export function generateStellarObject(
     return obj;
   }
 
+  if (kind === 'base') {
+    const orbitDistance = (orbitIndex + 1) * randomRange(0.001, 0.01);
+    const distance = parent.distance + orbitDistance;
+    const angle = Math.random() * Math.PI * 2;
+    const eccentricity = Math.random() * 0.01;
+    const orbitRotation = Math.random() * Math.PI * 2;
+    const body = {
+      name: `Base ${orbitIndex + 1}`,
+      type: 'base',
+      distance,
+      orbitDistance,
+      radius: 0.05,
+      temperature: parent.temperature,
+      isHabitable: true,
+      orbitalPeriod: Math.sqrt(Math.pow(distance, 3) / star.mass),
+      features: [],
+      angle,
+      eccentricity,
+      orbitRotation,
+      resources: {},
+      atmosphere: null,
+      moons: [],
+      population: Math.floor(randomRange(100, 1000))
+    };
+    return body;
+  }
+
   // planet or moon generation
   const baseDistance = parent ? parent.distance : 0;
   const step = parent
@@ -126,6 +153,9 @@ function generateChildren(star, body) {
   const moons = [];
   for (let i = 0; i < count; i++) {
     moons.push(generateStellarObject('moon', star, i, body, moons));
+  }
+  if (body.features?.includes('base')) {
+    moons.push(generateStellarObject('base', star, moons.length, body, moons));
   }
   return moons;
 }
