@@ -19,7 +19,7 @@ export function createSystemOverview(
   const planets = system.planets;
 
   // Bodies are drawn larger for better visibility
-  const BODY_SCALE = 3;
+  const BODY_SCALE = 6;
 
   // Zoom level for the system overview
   let zoom = 1;
@@ -43,12 +43,14 @@ export function createSystemOverview(
       ...planets.map((p) => p.distance * (1 + (p.eccentricity || 0))),
       1
     );
-    const scaleBase =
+    const scaleBase = Math.max(
       (Math.min(canvas.width, canvas.height) / 2 -
         baseStarRadius -
         baseMaxPlanetRadius -
         20) /
-      maxOrbit;
+        maxOrbit,
+      0.1
+    );
     const scale = scaleBase * zoom;
 
     starRadius = baseStarRadius * zoom;
@@ -192,6 +194,7 @@ export function createSystemOverview(
   const backBtn = document.createElement('button');
   backBtn.textContent = 'Back';
   backBtn.addEventListener('click', () => {
+    resizeObserver.disconnect();
     if (typeof onBack === 'function') {
       onBack();
     }

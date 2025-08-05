@@ -5,7 +5,7 @@ export function createOverview(onSelect, onOpenSystem) {
   overview.id = 'overview';
 
   // All stars are drawn with the same radius for a cleaner overview
-  const STAR_RADIUS = 2;
+  const STAR_RADIUS = 4;
 
   const galaxy = generateGalaxy();
   const ctx = overview.getContext('2d');
