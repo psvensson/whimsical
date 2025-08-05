@@ -18,6 +18,7 @@ test('planet sidebar shows gravity and celsius conversion', () => {
     distance: 1,
     radius: 1,
     gravity: 1,
+    atmosphericPressure: 1,
     temperature: 300,
     isHabitable: false,
     orbitalPeriod: 1,
@@ -31,6 +32,7 @@ test('planet sidebar shows gravity and celsius conversion', () => {
   const sidebar = createPlanetSidebar(planet);
   const html = sidebar.innerHTML;
   assert.match(html, /Gravity:<\/strong> 1\.00 g/);
+  assert.match(html, /Pressure:<\/strong> 1\.00 atm/);
   assert.match(html, /Temperature:<\/strong> 300\.00 K \(26\.85 °C\)/);
 
   delete global.document;

@@ -10,6 +10,7 @@ import {
   MOON_RULES,
   PLANET_FEATURES
 } from '../js/data/planets.js';
+import { ATMOSPHERE_GRAVITY_THRESHOLD } from '../js/stellar-object.js';
 
 const planetTypeNames = PLANET_TYPES.map((t) => t.name);
 const featureNames = PLANET_FEATURES.map((f) => f.name);
@@ -28,6 +29,8 @@ function validateBody(body, star, parent = null) {
     assert.ok(body.distance > 0);
     assert.ok(typeof body.radius === 'number');
     assert.ok(typeof body.gravity === 'number');
+    assert.ok(typeof body.atmosphericPressure === 'number');
+    assert.equal(body.atmosphericPressure, 0);
     if (parent) {
       assert.equal(body.gravity, parent.gravity);
       assert.equal(body.temperature, parent.temperature);
@@ -36,6 +39,7 @@ function validateBody(body, star, parent = null) {
   }
   assert.ok(typeof body.gravity === 'number');
   assert.ok(typeof body.temperature === 'number');
+   assert.ok(typeof body.atmosphericPressure === 'number');
   assert.ok(planetTypeNames.includes(body.type));
   const rule = PLANET_TYPES.find((t) => t.name === body.type);
   if (body.kind === 'planet') {
@@ -52,12 +56,15 @@ function validateBody(body, star, parent = null) {
     assert.ok(amount >= 0 && amount < 100);
   }
 
-  if (body.radius < 0.3) {
+  if (
+    body.gravity < ATMOSPHERE_GRAVITY_THRESHOLD ||
+    !(PLANET_ATMOSPHERES[body.type]?.length)
+  ) {
     assert.equal(body.atmosphere, null);
-  } else if (PLANET_ATMOSPHERES[body.type]?.length) {
-    assert.notEqual(body.atmosphere, null);
+    assert.equal(body.atmosphericPressure, 0);
   } else {
-    assert.equal(body.atmosphere, null);
+    assert.notEqual(body.atmosphere, null);
+    assert.equal(body.atmosphericPressure, body.gravity);
   }
 
   const inHZ =
@@ -69,6 +76,10 @@ function validateBody(body, star, parent = null) {
     assert.equal(body.isHabitable, true);
   } else {
     assert.equal(body.isHabitable, false);
+  }
+
+  if (parent && body.kind === 'moon') {
+    assert.ok(body.gravity <= parent.gravity * 0.1);
   }
 
   const naturalMoons = body.moons.filter((m) => m.type !== 'base');

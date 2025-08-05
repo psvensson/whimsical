@@ -36,6 +36,7 @@ export function createPlanetSidebar(planet) {
       <li><strong>Distance:</strong> ${planet.distance.toFixed(2)} AU</li>
       <li><strong>Radius:</strong> ${planet.radius.toFixed(2)}</li>
       <li><strong>Gravity:</strong> ${planet.gravity.toFixed(2)} g</li>
+      <li><strong>Pressure:</strong> ${planet.atmosphericPressure.toFixed(2)} atm</li>
       <li><strong>Temperature:</strong> ${planet.temperature.toFixed(2)} K (${(planet.temperature - 273.15).toFixed(2)} °C)</li>
       <li><strong>Habitable:</strong> ${planet.isHabitable ? 'Yes' : 'No'}</li>
       <li><strong>Orbital Period:</strong> ${planet.orbitalPeriod.toFixed(2)} years</li>
