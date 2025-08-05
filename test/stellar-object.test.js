@@ -24,6 +24,11 @@ function expectedMaxMoons(radius) {
 }
 
 function validateBody(body, star) {
+  if (body.type === 'base') {
+    assert.ok(body.distance > 0);
+    assert.ok(typeof body.radius === 'number');
+    return;
+  }
   assert.ok(planetTypeNames.includes(body.type));
   const rule = PLANET_TYPES.find((t) => t.name === body.type);
   if (body.name.startsWith('Planet')) {
@@ -57,8 +62,9 @@ function validateBody(body, star) {
     assert.equal(body.isHabitable, false);
   }
 
+  const naturalMoons = body.moons.filter((m) => m.type !== 'base');
   const maxMoons = expectedMaxMoons(body.radius);
-  assert.ok(body.moons.length <= maxMoons);
+  assert.ok(naturalMoons.length <= maxMoons);
   body.moons.forEach((m) => validateBody(m, star));
 }
 
@@ -83,7 +89,9 @@ test('planet with five moons has unique moon radii', () => {
   let targetPlanet = null;
   for (let i = 0; i < 100 && !targetPlanet; i++) {
     const star = generateStellarObject('star');
-    targetPlanet = star.planets.find((p) => p.moons.length === 5);
+    targetPlanet = star.planets.find(
+      (p) => p.moons.filter((m) => m.type !== 'base').length === 5
+    );
   }
   assert.ok(targetPlanet, 'Failed to generate planet with five moons');
   const radii = targetPlanet.moons.map((m) => m.radius);

@@ -1,7 +1,10 @@
 export function createPlanetSidebar(planet) {
   const container = document.createElement('div');
   container.className = 'planet-sidebar';
-  const features = planet.features && planet.features.length ? planet.features.join(', ') : 'None';
+  const surfaceObjects = (planet.features || []).filter((f) => f !== 'base');
+  const surfaceContent = surfaceObjects.length
+    ? `<ul>${surfaceObjects.map((s) => `<li>${s}</li>`).join('')}</ul>`
+    : '<p>None</p>';
   const resourceEntries = Object.entries(planet.resources || {});
   const resourcesTable = resourceEntries.length
     ? `<table class="info-table"><thead><tr><th>Resource</th><th>Amount</th></tr></thead><tbody>${resourceEntries
@@ -16,10 +19,10 @@ export function createPlanetSidebar(planet) {
     : '<p>None</p>';
   const moons = planet.moons || [];
   const moonsTable = moons.length
-    ? `<table class="info-table"><thead><tr><th>Moon</th><th>Type</th><th>Radius</th><th>Atmosphere</th></tr></thead><tbody>${moons
+    ? `<table class="info-table"><thead><tr><th>Name</th><th>Type</th><th>Radius</th><th>Atmosphere</th></tr></thead><tbody>${moons
         .map(
           (m, i) =>
-            `<tr><td>${m.name || `Moon ${i + 1}`}</td><td>${m.type}</td><td>${m.radius.toFixed(2)}</td><td>${m.atmosphere ? formatAtmosphere(m.atmosphere) : 'None'}</td></tr>`
+            `<tr><td>${m.name || `Object ${i + 1}`}</td><td>${m.type}</td><td>${m.radius.toFixed(2)}</td><td>${m.atmosphere ? formatAtmosphere(m.atmosphere) : 'None'}</td></tr>`
         )
         .join('')}</tbody></table>`
     : '<p>None</p>';
@@ -33,13 +36,14 @@ export function createPlanetSidebar(planet) {
       <li><strong>Habitable:</strong> ${planet.isHabitable ? 'Yes' : 'No'}</li>
       <li><strong>Orbital Period:</strong> ${planet.orbitalPeriod.toFixed(2)} years</li>
       <li><strong>Eccentricity:</strong> ${planet.eccentricity.toFixed(2)}</li>
-      <li><strong>Features:</strong> ${features}</li>
     </ul>
+    <h3>Surface Objects</h3>
+    ${surfaceContent}
     <h3>Atmosphere</h3>
     ${atmosphereTable}
     <h3>Resources</h3>
     ${resourcesTable}
-    <h3>Moons</h3>
+    <h3>Orbiting Objects</h3>
     ${moonsTable}
   `;
   return container;
