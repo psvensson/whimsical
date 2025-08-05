@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { generateStellarObject } from '../client/js/stellar-object.js';
+import { generateStar } from '../client/js/star.js';
 import { STAR_TYPES, STAR_CLASS_COLORS } from '../client/js/data/stars.js';
 import {
   PLANET_TYPES,
@@ -69,7 +69,7 @@ function validateBody(body, star) {
 }
 
 test('generate star with valid planets and moons', () => {
-  const star = generateStellarObject('star');
+  const star = generateStar();
   const starType = STAR_TYPES.find((s) => s.class === star.class);
   assert.ok(starType);
   assert.equal(star.name, starType.name);
@@ -88,7 +88,7 @@ test('generate star with valid planets and moons', () => {
 test('planet with five moons has unique moon radii', () => {
   let targetPlanet = null;
   for (let i = 0; i < 100 && !targetPlanet; i++) {
-    const star = generateStellarObject('star');
+    const star = generateStar();
     targetPlanet = star.planets.find(
       (p) => p.moons.filter((m) => m.type !== 'base').length === 5
     );
