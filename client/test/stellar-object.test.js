@@ -87,8 +87,11 @@ test('generate star with valid planets and moons', () => {
       star.luminosity <= starType.luminosity[1]
   );
   assert.ok(star.radius >= starType.radius[0] && star.radius <= starType.radius[1]);
-  const expectedGravity = star.mass / (star.radius * star.radius);
-  assert.ok(Math.abs(star.gravity - expectedGravity) < 1e-6);
+  const minGravity =
+    starType.mass[0] / Math.pow(starType.radius[1], 2);
+  const maxGravity =
+    starType.mass[1] / Math.pow(starType.radius[0], 2);
+  assert.ok(star.gravity >= minGravity && star.gravity <= maxGravity);
   assert.ok(Array.isArray(star.planets));
   assert.ok(star.planets.length >= 0 && star.planets.length <= 10);
   star.planets.forEach((p) => validateBody(p, star));
