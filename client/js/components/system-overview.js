@@ -11,13 +11,10 @@ export function createSystemOverview(
   const star = system.stars[0];
   const planets = system.planets;
   const STAR_SCALE = 12;
-  const PLANET_SCALE = 6;
+  const PLANET_RADIUS = 8; // constant radius for all planets
 
   const baseStarRadius = star.size * 2 * STAR_SCALE;
-  const baseMaxPlanetRadius = Math.max(
-    ...planets.map((p) => Math.min(p.radius * 2 * PLANET_SCALE, baseStarRadius / 4)),
-    0
-  );
+  const basePlanetRadius = PLANET_RADIUS;
 
   let starRadius = baseStarRadius;
   let planetData = [];
@@ -36,7 +33,7 @@ export function createSystemOverview(
     const scaleBase = Math.max(
       (Math.min(canvas.width, canvas.height) / 2 -
         baseStarRadius -
-        baseMaxPlanetRadius -
+        basePlanetRadius -
         20) /
         maxOrbit,
       0.1
@@ -60,10 +57,7 @@ export function createSystemOverview(
       const py = cy + yRot;
       const planetRadius = Math.max(
         0,
-        Math.min(
-          planet.radius * 2 * PLANET_SCALE * zoom,
-          starRadius / 4
-        )
+        Math.min(basePlanetRadius * zoom, starRadius / 4)
       );
       return { planet, orbitA, orbitB, e, rotation, theta, px, py, planetRadius };
     });
@@ -93,9 +87,9 @@ export function createSystemOverview(
       ctx.arc(px, py, planetRadius, 0, Math.PI * 2);
       ctx.fill();
 
+      let iconX = px + planetRadius + 4;
+      const iconY = py;
       if (planet.features) {
-        let iconX = px + planetRadius + 4;
-        const iconY = py;
         planet.features.forEach((f) => {
           ctx.fillStyle = '#fff';
           if (f === 'base') {
@@ -109,6 +103,12 @@ export function createSystemOverview(
           }
           iconX += 6;
         });
+      }
+      if (planet.moons && planet.moons.length) {
+        ctx.beginPath();
+        ctx.fillStyle = '#fff';
+        ctx.arc(iconX + 2, iconY, 2, 0, Math.PI * 2);
+        ctx.fill();
       }
     });
 
