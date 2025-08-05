@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { generateStarSystem } from '../client/js/galaxy.js';
+import { generateStarSystem } from '../js/galaxy.js';
 
 // Ensure that generating a star system produces a valid star object with planets
 // and does not throw due to a null star reference.

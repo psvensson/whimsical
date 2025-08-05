@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { generateStar } from '../client/js/star.js';
-import { STAR_TYPES, STAR_CLASS_COLORS } from '../client/js/data/stars.js';
+import { generateStar } from '../js/star.js';
+import { STAR_TYPES, STAR_CLASS_COLORS } from '../js/data/stars.js';
 import {
   PLANET_TYPES,
   PLANET_RESOURCES,
   PLANET_ATMOSPHERES,
   MOON_RULES,
   PLANET_FEATURES
-} from '../client/js/data/planets.js';
+} from '../js/data/planets.js';
 
 const planetTypeNames = PLANET_TYPES.map((t) => t.name);
 const featureNames = PLANET_FEATURES.map((f) => f.name);
