@@ -78,3 +78,18 @@ test('generate star with valid planets and moons', () => {
   assert.ok(star.planets.length >= 0 && star.planets.length <= 10);
   star.planets.forEach((p) => validateBody(p, star));
 });
+
+test('planet with five moons has unique moon radii', () => {
+  let targetPlanet = null;
+  for (let i = 0; i < 100 && !targetPlanet; i++) {
+    const star = generateStellarObject('star');
+    targetPlanet = star.planets.find((p) => p.moons.length === 5);
+  }
+  assert.ok(targetPlanet, 'Failed to generate planet with five moons');
+  const radii = targetPlanet.moons.map((m) => m.radius);
+  for (let i = 0; i < radii.length; i++) {
+    for (let j = i + 1; j < radii.length; j++) {
+      assert.ok(Math.abs(radii[i] - radii[j]) >= 0.01);
+    }
+  }
+});
