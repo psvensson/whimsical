@@ -106,7 +106,7 @@ export function generateStellarObject(
     return acc;
   }, {});
   const atmosphere = radius < 0.3 ? null : generateAtmosphere(type);
-  const name = generateBodyName(parent ? parent.name : star.name, orbitIndex);
+  const name = generateBodyName(star.name, orbitIndex, parent);
   const body = new StellarObject({
     name,
     kind,

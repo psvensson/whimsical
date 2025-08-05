@@ -119,7 +119,7 @@ export function createSystemOverview(
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
       ctx.font = '12px sans-serif';
-      ctx.fillText(`${planet.type} planet`, px, py - planetRadius - 8);
+      ctx.fillText(planet.name, px, py - planetRadius - 8);
 
       if (idx === hoveredIndex || idx === selectedIndex) {
         ctx.beginPath();
@@ -139,7 +139,7 @@ export function createSystemOverview(
   const overview = createOverview({
     update: updateLayout,
     draw,
-    label: 'Star System',
+    label: star.name,
   });
 
   canvas = overview.canvas;
