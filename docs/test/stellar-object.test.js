@@ -30,15 +30,18 @@ function validateBody(body, star, parent = null) {
     assert.ok(typeof body.radius === 'number');
     assert.ok(typeof body.gravity === 'number');
     assert.ok(typeof body.atmosphericPressure === 'number');
+    assert.ok(typeof body.temperatureSpan === 'number');
     assert.equal(body.atmosphericPressure, 0);
     if (parent) {
       assert.equal(body.gravity, parent.gravity);
       assert.equal(body.temperature, parent.temperature);
+      assert.equal(body.temperatureSpan, parent.temperatureSpan);
     }
     return;
   }
   assert.ok(typeof body.gravity === 'number');
   assert.ok(typeof body.temperature === 'number');
+  assert.ok(typeof body.temperatureSpan === 'number');
    assert.ok(typeof body.atmosphericPressure === 'number');
   assert.ok(planetTypeNames.includes(body.type));
   const rule = PLANET_TYPES.find((t) => t.name === body.type);
@@ -64,7 +67,7 @@ function validateBody(body, star, parent = null) {
     assert.equal(body.atmosphericPressure, 0);
   } else {
     assert.notEqual(body.atmosphere, null);
-    assert.equal(body.atmosphericPressure, body.gravity);
+    assert.ok(Math.abs(body.atmosphericPressure - body.gravity) > 1e-6);
   }
 
   const inHZ =
@@ -141,4 +144,33 @@ test('generated bodies include kind property', () => {
       }
     });
   });
+});
+
+test('planetary objects have different gravity and pressure', () => {
+  const star = generateStar();
+  const bodies = [];
+  star.planets.forEach((p) => {
+    bodies.push(p);
+    p.moons.forEach((m) => bodies.push(m));
+  });
+  bodies
+    .filter((b) => b.type !== 'base' && b.atmosphere)
+    .forEach((b) => {
+      assert.ok(Math.abs(b.gravity - b.atmosphericPressure) > 1e-6);
+    });
+});
+
+test('temperature span decreases with distance from star', () => {
+  const star = generateStar();
+  const bodies = [];
+  star.planets.forEach((p) => {
+    bodies.push(p);
+    p.moons.forEach((m) => bodies.push(m));
+  });
+  const sorted = bodies
+    .filter((b) => b.type !== 'base')
+    .sort((a, b) => a.distance - b.distance);
+  for (let i = 1; i < sorted.length; i++) {
+    assert.ok(sorted[i].temperatureSpan <= sorted[i - 1].temperatureSpan);
+  }
 });

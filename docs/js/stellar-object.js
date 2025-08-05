@@ -38,6 +38,7 @@ export function generateStellarObject(
       radius: 0.05,
       gravity: parent.gravity,
       temperature: parent.temperature,
+      temperatureSpan: parent.temperatureSpan,
       isHabitable: true,
       orbitalPeriod: Math.sqrt(Math.pow(distance, 3) / star.mass),
       features: [],
@@ -93,6 +94,7 @@ export function generateStellarObject(
 
   const temperature =
     278 * Math.pow(star.luminosity, 0.25) / Math.sqrt(distance);
+  const temperatureSpan = 50 / distance;
   const mass = Math.pow(radius, 3);
   let gravity;
   if (kind === 'moon' && parent) {
@@ -126,7 +128,7 @@ export function generateStellarObject(
     gravity >= ATMOSPHERE_GRAVITY_THRESHOLD &&
     (PLANET_ATMOSPHERES[type] || []).length > 0;
   const atmosphere = hasAtmosphere ? generateAtmosphere(type) : null;
-  const atmosphericPressure = hasAtmosphere ? gravity : 0;
+  const atmosphericPressure = hasAtmosphere ? gravity * 1.2 : 0;
   const name = generateBodyName(star.name, orbitIndex, parent);
   const body = new StellarObject({
     name,
@@ -137,6 +139,7 @@ export function generateStellarObject(
     gravity,
     mass,
     temperature,
+    temperatureSpan,
     isHabitable,
     orbitalPeriod,
     features,
