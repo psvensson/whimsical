@@ -15,7 +15,7 @@ export function createSystemOverview(
 
   const baseStarRadius = star.size * 2 * STAR_SCALE;
   const baseMaxPlanetRadius = Math.max(
-    ...planets.map((p) => Math.min(p.radius * 2 * PLANET_SCALE, baseStarRadius - 1)),
+    ...planets.map((p) => Math.min(p.radius * 2 * PLANET_SCALE, baseStarRadius / 4)),
     0
   );
 
@@ -60,7 +60,10 @@ export function createSystemOverview(
       const py = cy + yRot;
       const planetRadius = Math.max(
         0,
-        Math.min(planet.radius * 2 * PLANET_SCALE * zoom, starRadius - 1)
+        Math.min(
+          planet.radius * 2 * PLANET_SCALE * zoom,
+          starRadius / 4
+        )
       );
       return { planet, orbitA, orbitB, e, rotation, theta, px, py, planetRadius };
     });
