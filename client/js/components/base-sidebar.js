@@ -8,6 +8,7 @@ export function createBaseSidebar(base) {
     <ul>
       <li><strong>Orbit Distance:</strong> ${orbit.toFixed(3)} AU</li>
       <li><strong>Radius:</strong> ${base.radius.toFixed(2)}</li>
+      <li><strong>Gravity:</strong> ${base.gravity.toFixed(2)} g</li>
       <li><strong>Population:</strong> ${base.population}</li>
     </ul>
   `;

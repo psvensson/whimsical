@@ -23,12 +23,17 @@ function expectedMaxMoons(radius) {
   return 0;
 }
 
-function validateBody(body, star) {
+function validateBody(body, star, parent = null) {
   if (body.type === 'base') {
     assert.ok(body.distance > 0);
     assert.ok(typeof body.radius === 'number');
+    assert.ok(typeof body.gravity === 'number');
+    if (parent) {
+      assert.equal(body.gravity, parent.gravity);
+    }
     return;
   }
+  assert.ok(typeof body.gravity === 'number');
   assert.ok(planetTypeNames.includes(body.type));
   const rule = PLANET_TYPES.find((t) => t.name === body.type);
   if (body.kind === 'planet') {
@@ -65,7 +70,7 @@ function validateBody(body, star) {
   const naturalMoons = body.moons.filter((m) => m.type !== 'base');
   const maxMoons = expectedMaxMoons(body.radius);
   assert.ok(naturalMoons.length <= maxMoons);
-  body.moons.forEach((m) => validateBody(m, star));
+  body.moons.forEach((m) => validateBody(m, star, body));
 }
 
 test('generate star with valid planets and moons', () => {
@@ -82,6 +87,8 @@ test('generate star with valid planets and moons', () => {
       star.luminosity <= starType.luminosity[1]
   );
   assert.ok(star.radius >= starType.radius[0] && star.radius <= starType.radius[1]);
+  const expectedGravity = star.mass / (star.radius * star.radius);
+  assert.ok(Math.abs(star.gravity - expectedGravity) < 1e-6);
   assert.ok(Array.isArray(star.planets));
   assert.ok(star.planets.length >= 0 && star.planets.length <= 10);
   star.planets.forEach((p) => validateBody(p, star));
