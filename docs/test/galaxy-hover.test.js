@@ -73,3 +73,34 @@ test('hovering over star displays its name', async () => {
   delete global.requestAnimationFrame;
 });
 
+test('moving over empty space does not crash', async () => {
+  capturedText = null;
+  setupDom();
+  const star = generateStar();
+  const galaxy = {
+    size: 1,
+    systems: [{ x: 0, y: 0, system: { stars: [star] } }],
+  };
+
+  const overview = createGalaxyOverview(galaxy);
+  document.body.appendChild(overview);
+
+  await new Promise((r) => setTimeout(r, 0));
+
+  const canvas = overview.querySelector('canvas');
+  const event = new window.MouseEvent('mousemove', {
+    clientX: 0,
+    clientY: 0,
+  });
+
+  assert.doesNotThrow(() => {
+    canvas.dispatchEvent(event);
+  });
+  assert.equal(capturedText, null);
+
+  delete global.window;
+  delete global.document;
+  delete global.ResizeObserver;
+  delete global.requestAnimationFrame;
+});
+

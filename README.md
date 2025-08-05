@@ -23,14 +23,14 @@ The server should have proper tests for all functionality and tests should spin 
 
 ## Client
 
-A minimal client scaffold is available under `client/`. Open `client/index.html` in a browser to see the placeholder interface.
+A minimal client scaffold is available under `docs/`. Open `docs/index.html` in a browser to see the placeholder interface.
 
 ## Development
 
-Run `npm install` and `npm test` from within the `client` directory:
+Run `npm install` and `npm test` from within the `docs` directory:
 
 ```
-cd client
+cd docs
 npm install
 npm test
 ```
