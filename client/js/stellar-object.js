@@ -1,4 +1,3 @@
-import { STAR_TYPES, STAR_CLASS_COLORS } from './data/stars.js';
 import {
   PLANET_TYPES,
   PLANET_FEATURES,
@@ -7,7 +6,13 @@ import {
   MOON_RULES
 } from './data/planets.js';
 
-// Generic generator for stars, planets and moons including their orbiting bodies
+export class StellarObject {
+  constructor(props) {
+    Object.assign(this, props);
+  }
+}
+
+// Generic generator for planets, moons and bases including their orbiting bodies
 export function generateStellarObject(
   kind,
   star = null,
@@ -15,35 +20,13 @@ export function generateStellarObject(
   parent = null,
   siblings = []
 ) {
-  if (kind === 'star') {
-    const type = STAR_TYPES[randomInt(0, STAR_TYPES.length - 1)];
-    const obj = {
-      class: type.class,
-      name: type.name,
-      color: STAR_CLASS_COLORS[type.class],
-      size: type.size,
-      mass: randomRange(type.mass[0], type.mass[1]),
-      luminosity: randomRange(type.luminosity[0], type.luminosity[1]),
-      radius: randomRange(type.radius[0], type.radius[1]),
-      habitableZone: type.habitableZone,
-      planets: []
-    };
-    const planetCount = randomInt(0, 10);
-    for (let i = 0; i < planetCount; i++) {
-      obj.planets.push(
-        generateStellarObject('planet', obj, i, null, obj.planets)
-      );
-    }
-    return obj;
-  }
-
   if (kind === 'base') {
     const orbitDistance = (orbitIndex + 1) * randomRange(0.001, 0.01);
     const distance = parent.distance + orbitDistance;
     const angle = Math.random() * Math.PI * 2;
     const eccentricity = Math.random() * 0.01;
     const orbitRotation = Math.random() * Math.PI * 2;
-    const body = {
+    const body = new StellarObject({
       name: `Base ${orbitIndex + 1}`,
       type: 'base',
       distance,
@@ -60,7 +43,7 @@ export function generateStellarObject(
       atmosphere: null,
       moons: [],
       population: Math.floor(randomRange(100, 1000))
-    };
+    });
     return body;
   }
 
@@ -121,7 +104,7 @@ export function generateStellarObject(
     return acc;
   }, {});
   const atmosphere = radius < 0.3 ? null : generateAtmosphere(type);
-  const body = {
+  const body = new StellarObject({
     name: parent ? `Moon ${orbitIndex + 1}` : `Planet ${orbitIndex + 1}`,
     type,
     distance,
@@ -136,7 +119,7 @@ export function generateStellarObject(
     resources,
     atmosphere,
     moons: []
-  };
+  });
   body.moons = generateChildren(star, body);
   return body;
 }
@@ -202,11 +185,11 @@ function selectRule(star, distance, prev) {
   return PLANET_TYPES[0];
 }
 
-function randomInt(min, max) {
+export function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function randomRange(min, max) {
+export function randomRange(min, max) {
   return Math.random() * (max - min) + min;
 }
 
