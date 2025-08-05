@@ -131,7 +131,16 @@ export function generateStellarObject(
     gravity >= ATMOSPHERE_GRAVITY_THRESHOLD &&
     (PLANET_ATMOSPHERES[type] || []).length > 0;
   const atmosphere = hasAtmosphere ? generateAtmosphere(type) : null;
-  const atmosphericPressure = hasAtmosphere ? gravity * 1.2 : 0;
+  let atmosphericPressure = 0;
+  if (hasAtmosphere) {
+    if (type === 'martian') {
+      atmosphericPressure = randomRange(0.01, 0.3);
+    } else if (type === 'venusian') {
+      atmosphericPressure = randomRange(5, 10);
+    } else {
+      atmosphericPressure = gravity * 1.2;
+    }
+  }
   const name = generateBodyName(star.name, orbitIndex, parent);
   const body = new StellarObject({
     name,
