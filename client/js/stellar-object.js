@@ -5,6 +5,7 @@ import {
   PLANET_ATMOSPHERES,
   MOON_RULES
 } from './data/planets.js';
+import { generateBodyName } from './name-generator.js';
 
 export class StellarObject {
   constructor(props) {
@@ -105,8 +106,9 @@ export function generateStellarObject(
     return acc;
   }, {});
   const atmosphere = radius < 0.3 ? null : generateAtmosphere(type);
+  const name = generateBodyName(parent ? parent.name : star.name, orbitIndex);
   const body = new StellarObject({
-    name: parent ? `Moon ${orbitIndex + 1}` : `Planet ${orbitIndex + 1}`,
+    name,
     kind,
     type,
     distance,

@@ -31,7 +31,7 @@ function validateBody(body, star) {
   }
   assert.ok(planetTypeNames.includes(body.type));
   const rule = PLANET_TYPES.find((t) => t.name === body.type);
-  if (body.name.startsWith('Planet')) {
+  if (body.kind === 'planet') {
     assert.ok(body.radius >= rule.radius[0] && body.radius <= rule.radius[1]);
   }
   assert.ok(body.distance > 0);
@@ -72,7 +72,9 @@ test('generate star with valid planets and moons', () => {
   const star = generateStar();
   const starType = STAR_TYPES.find((s) => s.class === star.class);
   assert.ok(starType);
-  assert.equal(star.name, starType.name);
+  assert.equal(star.typeName, starType.name);
+  assert.ok(typeof star.name === 'string');
+  assert.ok(star.name.length > 0);
   assert.equal(star.color, STAR_CLASS_COLORS[star.class]);
   assert.ok(star.mass >= starType.mass[0] && star.mass <= starType.mass[1]);
   assert.ok(

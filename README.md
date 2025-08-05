@@ -7,6 +7,8 @@ Spacecraft can be sent to planets within a star system and outside to other star
 There will be three levels of scale; 1) Galactic, which is a 2d grid of all visible star systems, 2) System, which is a 2d view of star, planets and other large objects within the system, depicted as concentric orbits, with current spacecraft courses plotted on top.
 The planets will be randomly generated, a bit like StarGen-II but with fewer properties. Each planet will have a number of resources that can be mined if a mining ship is sent to it. One planet in the player's starting system must be earth-like, and it is here the player has its first base.
 
+Stars, planets and moons are given names procedurally. Stars always receive unique names, while planets and moons usually take their parent's name followed by a Roman numeral, though occasionally they are assigned unique names of their own.
+
 The client will be HTML/CSS with less.js for any ES6 JS logic needed.
 
 The server will be Node.js > 20.0 ES6, no build systems, no types, just basic libraries for HTTP APIs, CORS and Postgres ORM.
