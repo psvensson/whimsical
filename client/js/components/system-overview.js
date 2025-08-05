@@ -19,7 +19,7 @@ export function createSystemOverview(
   const planets = system.planets;
 
   // Bodies are drawn larger for better visibility
-  const BODY_SCALE = 6;
+  const BODY_SCALE = 12;
 
   // Zoom level for the system overview
   let zoom = 1;
@@ -40,7 +40,9 @@ export function createSystemOverview(
 
     // Ensure all orbits fit within the view
     const maxOrbit = Math.max(
-      ...planets.map((p) => p.distance * (1 + (p.eccentricity || 0))),
+      ...planets.map(
+        (p) => (p.distance || 0) * (1 + (p.eccentricity || 0))
+      ),
       1
     );
     const scaleBase = Math.max(
@@ -53,11 +55,12 @@ export function createSystemOverview(
     );
     const scale = scaleBase * zoom;
 
-    starRadius = baseStarRadius * zoom;
+    starRadius = Math.max(baseStarRadius * zoom, 0);
     planetData = planets.map((planet) => {
-      const orbitA = planet.distance * scale;
+      const dist = planet.distance || 0;
+      const orbitA = Math.max(dist * scale, 0);
       const e = planet.eccentricity || 0;
-      const orbitB = orbitA * Math.sqrt(1 - e * e);
+      const orbitB = Math.max(orbitA * Math.sqrt(Math.max(0, 1 - e * e)), 0);
       const rotation = planet.orbitRotation || 0;
       const theta = planet.angle;
       const r = (orbitA * (1 - e * e)) / (1 + e * Math.cos(theta));
@@ -67,9 +70,9 @@ export function createSystemOverview(
       const yRot = x * Math.sin(rotation) + y * Math.cos(rotation);
       const px = cx + xRot;
       const py = cy + yRot;
-      const planetRadius = Math.min(
-        planet.radius * 3 * BODY_SCALE * zoom,
-        starRadius - 1
+      const planetRadius = Math.max(
+        0,
+        Math.min(planet.radius * 3 * BODY_SCALE * zoom, starRadius - 1)
       );
       return { planet, orbitA, orbitB, e, rotation, theta, px, py, planetRadius };
     });
@@ -84,13 +87,15 @@ export function createSystemOverview(
     // Draw orbits first so they appear beneath planets
     ctx.lineWidth = 1;
     planetData.forEach(({ orbitA, orbitB, e, rotation }) => {
-      ctx.beginPath();
-      ctx.strokeStyle = '#444';
-      const centerX = cx - orbitA * e * Math.cos(rotation);
-      const centerY = cy - orbitA * e * Math.sin(rotation);
-      // Draw orbit as an ellipse with the star at one focus
-      ctx.ellipse(centerX, centerY, orbitA, orbitB, rotation, 0, Math.PI * 2);
-      ctx.stroke();
+      if (orbitA > 0 && orbitB > 0) {
+        ctx.beginPath();
+        ctx.strokeStyle = '#444';
+        const centerX = cx - orbitA * e * Math.cos(rotation);
+        const centerY = cy - orbitA * e * Math.sin(rotation);
+        // Draw orbit as an ellipse with the star at one focus
+        ctx.ellipse(centerX, centerY, orbitA, orbitB, rotation, 0, Math.PI * 2);
+        ctx.stroke();
+      }
     });
 
     // Draw planets and their feature icons
