@@ -24,7 +24,27 @@ export function generateBody(star, orbitIndex, parent = null, siblings = []) {
     maxR = Math.min(maxR, parent.radius * 0.1);
     minR = Math.min(minR, maxR);
   }
-  let radius = randomRange(minR, maxR);
+  let radius;
+  if (parent) {
+    radius =
+      minR === maxR
+        ? minR * randomRange(0.8, 1.2)
+        : randomRange(minR, maxR);
+    let attempts = 0;
+    while (
+      siblings.some((s) => Math.abs(s.radius - radius) < 0.01) &&
+      attempts < 5
+    ) {
+      radius =
+        minR === maxR
+          ? minR * randomRange(0.8, 1.2)
+          : randomRange(minR, maxR);
+      attempts++;
+    }
+    radius = Math.min(Math.max(radius, minR), maxR);
+  } else {
+    radius = randomRange(minR, maxR);
+  }
 
   // Determine final type based on resulting radius. Small bodies below 0.3
   // Earth radii have no atmosphere and can only be rocky or lava worlds.

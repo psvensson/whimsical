@@ -18,17 +18,40 @@ export function createSystemOverview(
   const star = system.stars[0];
   const planets = system.planets;
 
-  let starRadius = star.size * 2;
+  // Bodies are drawn larger for better visibility
+  const BODY_SCALE = 3;
+
+  // Zoom level for the system overview
+  let zoom = 1;
+
+  const baseStarRadius = star.size * 2 * BODY_SCALE;
+  const baseMaxPlanetRadius = Math.max(
+    ...planets.map((p) => Math.min(p.radius * 3 * BODY_SCALE, baseStarRadius - 1)),
+    0
+  );
+
+  let starRadius = baseStarRadius;
   let planetData = [];
   let hoveredIndex = null;
 
   function updateLayout() {
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
-    const maxDistance = Math.max(...planets.map(p => p.distance), 1);
-    const scale = (Math.min(canvas.width, canvas.height) / 2 - 20) / maxDistance;
 
-    starRadius = star.size * 2;
+    // Ensure all orbits fit within the view
+    const maxOrbit = Math.max(
+      ...planets.map((p) => p.distance * (1 + (p.eccentricity || 0))),
+      1
+    );
+    const scaleBase =
+      (Math.min(canvas.width, canvas.height) / 2 -
+        baseStarRadius -
+        baseMaxPlanetRadius -
+        20) /
+      maxOrbit;
+    const scale = scaleBase * zoom;
+
+    starRadius = baseStarRadius * zoom;
     planetData = planets.map((planet) => {
       const orbitA = planet.distance * scale;
       const e = planet.eccentricity || 0;
@@ -42,7 +65,10 @@ export function createSystemOverview(
       const yRot = x * Math.sin(rotation) + y * Math.cos(rotation);
       const px = cx + xRot;
       const py = cy + yRot;
-      const planetRadius = Math.min(planet.radius * 3, starRadius - 1);
+      const planetRadius = Math.min(
+        planet.radius * 3 * BODY_SCALE * zoom,
+        starRadius - 1
+      );
       return { planet, orbitA, orbitB, e, rotation, theta, px, py, planetRadius };
     });
   }
@@ -120,6 +146,12 @@ export function createSystemOverview(
     });
   }
 
+  function setZoom(newZoom) {
+    zoom = Math.min(Math.max(newZoom, 0.5), 5);
+    updateLayout();
+    draw();
+  }
+
   function resize() {
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
@@ -151,6 +183,12 @@ export function createSystemOverview(
     }
   });
 
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const factor = e.deltaY < 0 ? 1.1 : 0.9;
+    setZoom(zoom * factor);
+  });
+
   const backBtn = document.createElement('button');
   backBtn.textContent = 'Back';
   backBtn.addEventListener('click', () => {
@@ -159,7 +197,15 @@ export function createSystemOverview(
     }
   });
 
-  container.append(canvas, backBtn);
+  const zoomInBtn = document.createElement('button');
+  zoomInBtn.textContent = '+';
+  zoomInBtn.addEventListener('click', () => setZoom(zoom * 1.2));
+
+  const zoomOutBtn = document.createElement('button');
+  zoomOutBtn.textContent = '-';
+  zoomOutBtn.addEventListener('click', () => setZoom(zoom / 1.2));
+
+  container.append(canvas, zoomInBtn, zoomOutBtn, backBtn);
   requestAnimationFrame(resize);
   return container;
 }
