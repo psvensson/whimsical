@@ -8,8 +8,10 @@ export function createOverview({ update, draw } = {}) {
 
   const zoomInBtn = document.createElement('button');
   zoomInBtn.textContent = '+';
+  zoomInBtn.className = 'zoom-btn zoom-in';
   const zoomOutBtn = document.createElement('button');
   zoomOutBtn.textContent = '-';
+  zoomOutBtn.className = 'zoom-btn zoom-out';
   container.append(zoomInBtn, zoomOutBtn);
 
   let zoom = 1;
