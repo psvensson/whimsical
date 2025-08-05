@@ -10,11 +10,12 @@ export function createSystemOverview(
 ) {
   const star = system.stars[0];
   const planets = system.planets;
-  const BODY_SCALE = 12;
+  const STAR_SCALE = 12;
+  const PLANET_SCALE = 6;
 
-  const baseStarRadius = star.size * 2 * BODY_SCALE;
+  const baseStarRadius = star.size * 2 * STAR_SCALE;
   const baseMaxPlanetRadius = Math.max(
-    ...planets.map((p) => Math.min(p.radius * 2 * BODY_SCALE, baseStarRadius - 1)),
+    ...planets.map((p) => Math.min(p.radius * 2 * PLANET_SCALE, baseStarRadius - 1)),
     0
   );
 
@@ -59,7 +60,7 @@ export function createSystemOverview(
       const py = cy + yRot;
       const planetRadius = Math.max(
         0,
-        Math.min(planet.radius * 2 * BODY_SCALE * zoom, starRadius - 1)
+        Math.min(planet.radius * 2 * PLANET_SCALE * zoom, starRadius - 1)
       );
       return { planet, orbitA, orbitB, e, rotation, theta, px, py, planetRadius };
     });
@@ -165,6 +166,7 @@ export function createSystemOverview(
 
   const backBtn = document.createElement('button');
   backBtn.textContent = 'Back';
+  backBtn.className = 'back-btn';
   backBtn.addEventListener('click', () => {
     overview.destroy();
     if (typeof onBack === 'function') {
