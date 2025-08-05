@@ -28,6 +28,7 @@ export function generateStellarObject(
     const orbitRotation = Math.random() * Math.PI * 2;
     const body = new StellarObject({
       name: `Base ${orbitIndex + 1}`,
+      kind: 'base',
       type: 'base',
       distance,
       orbitDistance,
@@ -106,6 +107,7 @@ export function generateStellarObject(
   const atmosphere = radius < 0.3 ? null : generateAtmosphere(type);
   const body = new StellarObject({
     name: parent ? `Moon ${orbitIndex + 1}` : `Planet ${orbitIndex + 1}`,
+    kind,
     type,
     distance,
     radius,

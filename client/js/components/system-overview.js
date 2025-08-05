@@ -10,8 +10,8 @@ export function createSystemOverview(
 ) {
   const star = system.stars[0];
   const planets = system.planets;
-  const STAR_SCALE = 12;
-  const PLANET_RADIUS = 8; // constant radius for all planets
+  const STAR_SCALE = 24;
+  const PLANET_RADIUS = 16; // constant radius for all planets
 
   const baseStarRadius = star.size * 2 * STAR_SCALE;
   const basePlanetRadius = PLANET_RADIUS;
@@ -87,29 +87,35 @@ export function createSystemOverview(
       ctx.arc(px, py, planetRadius, 0, Math.PI * 2);
       ctx.fill();
 
-      let iconX = px + planetRadius + 4;
+      let iconX = px + planetRadius + 8;
       const iconY = py;
       if (planet.features) {
         planet.features.forEach((f) => {
           ctx.fillStyle = '#fff';
           if (f === 'base') {
-            ctx.fillRect(iconX, iconY - 2, 4, 4);
+            ctx.fillRect(iconX, iconY - 4, 8, 8);
           } else if (f === 'mine') {
             ctx.beginPath();
-            ctx.moveTo(iconX, iconY - 3);
-            ctx.lineTo(iconX + 4, iconY - 3);
-            ctx.lineTo(iconX + 2, iconY + 1);
+            ctx.moveTo(iconX, iconY - 6);
+            ctx.lineTo(iconX + 8, iconY - 6);
+            ctx.lineTo(iconX + 4, iconY + 2);
             ctx.fill();
           }
-          iconX += 6;
+          iconX += 12;
         });
       }
       if (planet.moons && planet.moons.length) {
         ctx.beginPath();
         ctx.fillStyle = '#fff';
-        ctx.arc(iconX + 2, iconY, 2, 0, Math.PI * 2);
+        ctx.arc(iconX + 4, iconY, 4, 0, Math.PI * 2);
         ctx.fill();
       }
+
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.font = '12px sans-serif';
+      ctx.fillText(`${planet.type} planet`, px, py - planetRadius - 8);
     });
 
     ctx.beginPath();
@@ -122,7 +128,7 @@ export function createSystemOverview(
       ctx.beginPath();
       ctx.strokeStyle = 'rgba(255,255,255,0.8)';
       ctx.lineWidth = 2;
-      ctx.arc(px, py, planetRadius + 3, 0, Math.PI * 2);
+      ctx.arc(px, py, planetRadius + 6, 0, Math.PI * 2);
       ctx.stroke();
     }
   }
