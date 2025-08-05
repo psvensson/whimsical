@@ -3,6 +3,7 @@ export function createBaseSidebar(base) {
   container.className = 'base-sidebar';
   const orbit = base.orbitDistance || 0;
   container.innerHTML = `
+    <div class="sidebar-label">Base</div>
     <h2>${base.name}</h2>
     <ul>
       <li><strong>Orbit Distance:</strong> ${orbit.toFixed(3)} AU</li>

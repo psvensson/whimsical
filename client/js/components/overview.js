@@ -1,10 +1,17 @@
-export function createOverview({ update, draw } = {}) {
+export function createOverview({ update, draw, label } = {}) {
   const container = document.createElement('div');
   container.className = 'overview';
 
   const canvas = document.createElement('canvas');
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
+
+  if (label) {
+    const labelEl = document.createElement('div');
+    labelEl.className = 'overview-label';
+    labelEl.textContent = label;
+    container.appendChild(labelEl);
+  }
 
   const zoomInBtn = document.createElement('button');
   zoomInBtn.textContent = '+';

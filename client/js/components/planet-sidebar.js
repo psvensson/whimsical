@@ -1,6 +1,7 @@
 export function createPlanetSidebar(planet) {
   const container = document.createElement('div');
   container.className = 'planet-sidebar';
+  const labelText = planet.kind === 'moon' ? 'Moon' : 'Planet';
   const surfaceObjects = (planet.features || []).filter((f) => f !== 'base');
   const surfaceContent = surfaceObjects.length
     ? `<ul>${surfaceObjects.map((s) => `<li>${s}</li>`).join('')}</ul>`
@@ -28,6 +29,7 @@ export function createPlanetSidebar(planet) {
     : '<p>None</p>';
 
   container.innerHTML = `
+    <div class="sidebar-label">${labelText}</div>
     <h2>${planet.type} ${planet.kind}</h2>
     <ul>
       <li><strong>Distance:</strong> ${planet.distance.toFixed(2)} AU</li>
