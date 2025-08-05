@@ -30,10 +30,12 @@ function validateBody(body, star, parent = null) {
     assert.ok(typeof body.gravity === 'number');
     if (parent) {
       assert.equal(body.gravity, parent.gravity);
+      assert.equal(body.temperature, parent.temperature);
     }
     return;
   }
   assert.ok(typeof body.gravity === 'number');
+  assert.ok(typeof body.temperature === 'number');
   assert.ok(planetTypeNames.includes(body.type));
   const rule = PLANET_TYPES.find((t) => t.name === body.type);
   if (body.kind === 'planet') {
@@ -61,7 +63,9 @@ function validateBody(body, star, parent = null) {
   const inHZ =
     body.distance >= star.habitableZone[0] &&
     body.distance <= star.habitableZone[1];
-  if (body.type === 'terrestrial' && inHZ) {
+  const gravityOk = body.gravity >= 0.5 && body.gravity <= 1.5;
+  const tempOk = body.temperature >= 260 && body.temperature <= 320;
+  if (body.type === 'terrestrial' && inHZ && gravityOk && tempOk) {
     assert.equal(body.isHabitable, true);
   } else {
     assert.equal(body.isHabitable, false);

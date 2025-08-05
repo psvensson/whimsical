@@ -95,7 +95,11 @@ export function generateStellarObject(
   const isHabitable =
     type === 'terrestrial' &&
     distance >= star.habitableZone[0] &&
-    distance <= star.habitableZone[1];
+    distance <= star.habitableZone[1] &&
+    gravity >= 0.5 &&
+    gravity <= 1.5 &&
+    temperature >= 260 &&
+    temperature <= 320;
   const orbitalPeriod = Math.sqrt(Math.pow(distance, 3) / star.mass); // in Earth years
   const features = PLANET_FEATURES.filter((f) => Math.random() < f.chance).map(
     (f) => f.name
