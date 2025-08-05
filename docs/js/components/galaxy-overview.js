@@ -93,6 +93,9 @@ export function createGalaxyOverview(
 
   canvas.addEventListener('mousemove', (e) => {
     hoveredIndex = getStarIndex(e);
+    if (hoveredIndex === -1) {
+      hoveredIndex = null;
+    }
     draw();
   });
 
