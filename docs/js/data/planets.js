@@ -1,15 +1,21 @@
 export const PLANET_TYPES = [
   {
-    name: 'lava',
-    bias: 'inner',
-    maxDistance: star => star.habitableZone[0] * 0.5,
-    radius: [0.3, 2]
-  },
-  {
     name: 'rocky',
     bias: 'inner',
     maxDistance: star => star.habitableZone[0],
     radius: [0.3, 2]
+  },
+  {
+    name: 'martian',
+    bias: 'outer',
+    maxDistance: star => star.habitableZone[1] * 1.5,
+    radius: [0.3, 1]
+  },
+  {
+    name: 'venusian',
+    bias: 'inner',
+    maxDistance: star => star.habitableZone[0] * 0.8,
+    radius: [0.5, 1.5]
   },
   {
     name: 'terrestrial',
@@ -33,8 +39,9 @@ export const PLANET_TYPES = [
 ];
 
 export const PLANET_COLORS = {
-  lava: '#ff4500',
   rocky: '#b0b0b0',
+  martian: '#b22222',
+  venusian: '#e6b422',
   terrestrial: '#2ecc71',
   ice: '#87cefa',
   'gas giant': '#f1c40f'
@@ -46,8 +53,9 @@ export const PLANET_FEATURES = [
 ];
 
 export const PLANET_RESOURCES = {
-  lava: ['sulfur', 'silicates', 'iron'],
   rocky: ['iron', 'cobalt', 'uranium', 'carbon', 'silicon', 'nickel', 'water'],
+  martian: ['iron', 'carbon', 'silicon', 'nickel', 'water'],
+  venusian: ['sulfur', 'carbon', 'silicon', 'iron'],
   terrestrial: [
     'iron',
     'cobalt',
@@ -63,8 +71,9 @@ export const PLANET_RESOURCES = {
 };
 
 export const PLANET_ATMOSPHERES = {
-  lava: [],
   rocky: ['carbon dioxide', 'nitrogen'],
+  martian: ['carbon dioxide', 'argon', 'nitrogen'],
+  venusian: ['carbon dioxide', 'nitrogen'],
   terrestrial: ['nitrogen', 'oxygen', 'argon'],
   ice: ['nitrogen', 'methane'],
   'gas giant': ['hydrogen', 'helium', 'methane', 'ammonia']
