@@ -91,7 +91,7 @@ export function generateStellarObject(
   const temperature =
     278 * Math.pow(star.luminosity, 0.25) / Math.sqrt(distance);
   const mass = Math.pow(radius, 3);
-  const gravity = mass / Math.pow(radius, 2);
+  const gravity = randomRange(0.1, 3);
   const isHabitable =
     type === 'terrestrial' &&
     distance >= star.habitableZone[0] &&

@@ -7,6 +7,8 @@ export class Star extends StellarObject {
     const type = STAR_TYPES[randomInt(0, STAR_TYPES.length - 1)];
     const mass = randomRange(type.mass[0], type.mass[1]);
     const radius = randomRange(type.radius[0], type.radius[1]);
+    const minGravity = type.mass[0] / Math.pow(type.radius[1], 2);
+    const maxGravity = type.mass[1] / Math.pow(type.radius[0], 2);
     super({
       class: type.class,
       typeName: type.name,
@@ -16,7 +18,7 @@ export class Star extends StellarObject {
       mass,
       luminosity: randomRange(type.luminosity[0], type.luminosity[1]),
       radius,
-      gravity: mass / Math.pow(radius, 2),
+      gravity: randomRange(minGravity, maxGravity),
       habitableZone: type.habitableZone
     });
     this.planets = [];

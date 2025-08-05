@@ -53,6 +53,21 @@ export function createGalaxyOverview(
         ctx.stroke();
       }
     });
+
+    if (hoveredIndex !== null) {
+      const { cx, cy, star } = starPositions[hoveredIndex];
+      const text = star.name;
+      ctx.font = '16px sans-serif';
+      ctx.textBaseline = 'top';
+      const textWidth = ctx.measureText(text).width;
+      const padding = 4;
+      const x = cx - textWidth / 2 - padding;
+      const y = cy - STAR_RADIUS - 8 - 16 - padding;
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(x, y, textWidth + padding * 2, 16 + padding * 2);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(text, x + padding, y + padding);
+    }
   }
 
   const overview = createOverview({
