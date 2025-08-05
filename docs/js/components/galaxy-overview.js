@@ -6,7 +6,7 @@ export function createGalaxyOverview(
   onOpenSystem,
   selectedSystem = null
 ) {
-  const STAR_RADIUS = 16;
+  const STAR_RADIUS = 12;
   const size = galaxy.size;
 
   const systems = galaxy.systems.map(({ x, y, system }) => ({
@@ -41,9 +41,44 @@ export function createGalaxyOverview(
 
     starPositions.forEach(({ cx, cy, star }, idx) => {
       ctx.beginPath();
-      ctx.fillStyle = star.color;
+      if (typeof ctx.createRadialGradient === 'function') {
+        const gradient = ctx.createRadialGradient(
+          cx - STAR_RADIUS / 3,
+          cy - STAR_RADIUS / 3,
+          STAR_RADIUS / 4,
+          cx,
+          cy,
+          STAR_RADIUS
+        );
+        gradient.addColorStop(0, '#fff');
+        gradient.addColorStop(0.3, star.color);
+        gradient.addColorStop(1, star.color);
+        ctx.fillStyle = gradient;
+      } else {
+        ctx.fillStyle = star.color;
+      }
       ctx.arc(cx, cy, STAR_RADIUS, 0, Math.PI * 2);
       ctx.fill();
+
+      if (typeof ctx.createRadialGradient === 'function') {
+        ctx.beginPath();
+        ctx.arc(
+          cx - STAR_RADIUS / 3,
+          cy - STAR_RADIUS / 3,
+          STAR_RADIUS / 4,
+          0,
+          Math.PI * 2
+        );
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.fill();
+      }
+
+      if (!star.planets.length) {
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        ctx.arc(cx, cy, STAR_RADIUS / 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
 
       if (idx === hoveredIndex || idx === selectedIndex) {
         ctx.beginPath();
@@ -75,6 +110,8 @@ export function createGalaxyOverview(
     draw,
     label: 'Galaxy',
   });
+
+  overview.container.classList.add('galaxy-overview');
 
   canvas = overview.canvas;
   ctx = overview.ctx;
