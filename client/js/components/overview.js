@@ -3,8 +3,6 @@ import { generateGalaxy } from '../galaxy.js';
 export function createOverview(onSelect, onOpenSystem) {
   const overview = document.createElement('canvas');
   overview.id = 'overview';
-  overview.width = 400;
-  overview.height = 400;
 
   // All stars are drawn with the same radius for a cleaner overview
   const STAR_RADIUS = 2;
@@ -13,23 +11,35 @@ export function createOverview(onSelect, onOpenSystem) {
   const ctx = overview.getContext('2d');
 
   const size = galaxy.size;
-  const scaleX = overview.width / (size * 2 + 1);
-  const scaleY = overview.height / (size * 2 + 1);
 
-  const systems = galaxy.systems.map(({ x, y, system }) => {
-    const star = system.stars[0];
-    const cx = (x + size) * scaleX;
-    const cy = (y + size) * scaleY;
-    return { cx, cy, star, system };
-  });
+  // Store base galaxy coordinates so we can rescale on resize
+  const systems = galaxy.systems.map(({ x, y, system }) => ({
+    x,
+    y,
+    star: system.stars[0],
+    system,
+  }));
 
+  // Will hold the screen coordinates for the current canvas size
+  let starPositions = [];
   let hoveredIndex = null;
+
+  function updateStarPositions() {
+    const scale = Math.min(overview.width, overview.height) / (size * 2 + 1);
+    const offsetX = (overview.width - scale * (size * 2 + 1)) / 2;
+    const offsetY = (overview.height - scale * (size * 2 + 1)) / 2;
+    starPositions = systems.map(({ x, y, star, system }) => {
+      const cx = (x + size) * scale + offsetX;
+      const cy = (y + size) * scale + offsetY;
+      return { cx, cy, star, system };
+    });
+  }
 
   function draw() {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, overview.width, overview.height);
 
-    systems.forEach(({ cx, cy, star }, idx) => {
+    starPositions.forEach(({ cx, cy, star }, idx) => {
       ctx.beginPath();
       ctx.fillStyle = star.color;
       ctx.arc(cx, cy, STAR_RADIUS, 0, Math.PI * 2);
@@ -47,16 +57,28 @@ export function createOverview(onSelect, onOpenSystem) {
 
   function getStarIndex(event) {
     const rect = overview.getBoundingClientRect();
-    const scaleX = overview.width / rect.width;
-    const scaleY = overview.height / rect.height;
-    const x = (event.clientX - rect.left) * scaleX;
-    const y = (event.clientY - rect.top) * scaleY;
-    return systems.findIndex(({ cx, cy, star }) => {
+    const scale = overview.width / rect.width;
+    const x = (event.clientX - rect.left) * scale;
+    const y = (event.clientY - rect.top) * scale;
+    return starPositions.findIndex(({ cx, cy }) => {
       const dx = cx - x;
       const dy = cy - y;
       return Math.sqrt(dx * dx + dy * dy) <= STAR_RADIUS;
     });
   }
+
+  function resize() {
+    const rect = overview.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    overview.width = rect.width * dpr;
+    overview.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    updateStarPositions();
+    draw();
+  }
+
+  const resizeObserver = new ResizeObserver(resize);
+  resizeObserver.observe(overview);
 
   overview.addEventListener('mousemove', (e) => {
     hoveredIndex = getStarIndex(e);
@@ -88,6 +110,6 @@ export function createOverview(onSelect, onOpenSystem) {
     }
   });
 
-  draw();
+  requestAnimationFrame(resize);
   return overview;
 }

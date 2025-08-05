@@ -15,34 +15,41 @@ export function createSystemOverview(
   canvas.height = height;
   const ctx = canvas.getContext('2d');
 
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
   const star = system.stars[0];
   const planets = system.planets;
-  const maxDistance = Math.max(...planets.map(p => p.distance), 1);
-  const scale = (canvas.width / 2 - 20) / maxDistance;
 
-  const starRadius = star.size * 2;
-  const planetData = planets.map((planet) => {
-    const orbitA = planet.distance * scale;
-    const e = planet.eccentricity || 0;
-    const orbitB = orbitA * Math.sqrt(1 - e * e);
-    const rotation = planet.orbitRotation || 0;
-    const theta = planet.angle;
-    const r = (orbitA * (1 - e * e)) / (1 + e * Math.cos(theta));
-    const x = r * Math.cos(theta);
-    const y = r * Math.sin(theta);
-    const xRot = x * Math.cos(rotation) - y * Math.sin(rotation);
-    const yRot = x * Math.sin(rotation) + y * Math.cos(rotation);
-    const px = cx + xRot;
-    const py = cy + yRot;
-    const planetRadius = Math.min(planet.radius * 3, starRadius - 1);
-    return { planet, orbitA, orbitB, e, rotation, theta, px, py, planetRadius };
-  });
-
+  let starRadius = star.size * 2;
+  let planetData = [];
   let hoveredIndex = null;
 
+  function updateLayout() {
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const maxDistance = Math.max(...planets.map(p => p.distance), 1);
+    const scale = (Math.min(canvas.width, canvas.height) / 2 - 20) / maxDistance;
+
+    starRadius = star.size * 2;
+    planetData = planets.map((planet) => {
+      const orbitA = planet.distance * scale;
+      const e = planet.eccentricity || 0;
+      const orbitB = orbitA * Math.sqrt(1 - e * e);
+      const rotation = planet.orbitRotation || 0;
+      const theta = planet.angle;
+      const r = (orbitA * (1 - e * e)) / (1 + e * Math.cos(theta));
+      const x = r * Math.cos(theta);
+      const y = r * Math.sin(theta);
+      const xRot = x * Math.cos(rotation) - y * Math.sin(rotation);
+      const yRot = x * Math.sin(rotation) + y * Math.cos(rotation);
+      const px = cx + xRot;
+      const py = cy + yRot;
+      const planetRadius = Math.min(planet.radius * 3, starRadius - 1);
+      return { planet, orbitA, orbitB, e, rotation, theta, px, py, planetRadius };
+    });
+  }
+
   function draw() {
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -103,16 +110,28 @@ export function createSystemOverview(
 
   function getPlanetIndex(event) {
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = (event.clientX - rect.left) * scaleX;
-    const y = (event.clientY - rect.top) * scaleY;
+    const scale = canvas.width / rect.width;
+    const x = (event.clientX - rect.left) * scale;
+    const y = (event.clientY - rect.top) * scale;
     return planetData.findIndex(({ px, py, planetRadius }) => {
       const dx = px - x;
       const dy = py - y;
       return Math.sqrt(dx * dx + dy * dy) <= planetRadius;
     });
   }
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    updateLayout();
+    draw();
+  }
+
+  const resizeObserver = new ResizeObserver(resize);
+  resizeObserver.observe(canvas);
 
   canvas.addEventListener('mousemove', (e) => {
     const idx = getPlanetIndex(e);
@@ -132,8 +151,6 @@ export function createSystemOverview(
     }
   });
 
-  draw();
-
   const backBtn = document.createElement('button');
   backBtn.textContent = 'Back';
   backBtn.addEventListener('click', () => {
@@ -143,6 +160,7 @@ export function createSystemOverview(
   });
 
   container.append(canvas, backBtn);
+  requestAnimationFrame(resize);
   return container;
 }
 
