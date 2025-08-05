@@ -1,7 +1,7 @@
-import { generateStellarObject } from './stellar-object.js';
+import { generateStar } from './star.js';
 
 export function generateStarSystem() {
-  const star = generateStellarObject('star');
+  const star = generateStar();
   return { stars: [star], planets: star.planets };
 }
 
