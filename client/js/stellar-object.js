@@ -1,3 +1,4 @@
+import { STAR_TYPES, STAR_CLASS_COLORS } from './data/stars.js';
 import {
   PLANET_TYPES,
   PLANET_FEATURES,
@@ -6,10 +7,37 @@ import {
   MOON_RULES
 } from './data/planets.js';
 
-// Generate an orbital body around a star or another body. The same
-// function is used for planets and moons; moons are simply bodies with
-// a parent and are limited to one tenth of their parent's size.
-export function generateBody(star, orbitIndex, parent = null, siblings = []) {
+// Generic generator for stars, planets and moons including their orbiting bodies
+export function generateStellarObject(
+  kind,
+  star = null,
+  orbitIndex = 0,
+  parent = null,
+  siblings = []
+) {
+  if (kind === 'star') {
+    const type = STAR_TYPES[randomInt(0, STAR_TYPES.length - 1)];
+    const obj = {
+      class: type.class,
+      name: type.name,
+      color: STAR_CLASS_COLORS[type.class],
+      size: type.size,
+      mass: randomRange(type.mass[0], type.mass[1]),
+      luminosity: randomRange(type.luminosity[0], type.luminosity[1]),
+      radius: randomRange(type.radius[0], type.radius[1]),
+      habitableZone: type.habitableZone,
+      planets: []
+    };
+    const planetCount = randomInt(0, 10);
+    for (let i = 0; i < planetCount; i++) {
+      obj.planets.push(
+        generateStellarObject('planet', obj, i, null, obj.planets)
+      );
+    }
+    return obj;
+  }
+
+  // planet or moon generation
   const baseDistance = parent ? parent.distance : 0;
   const step = parent
     ? (orbitIndex + 1) * randomRange(0.01, 0.2)
@@ -22,32 +50,23 @@ export function generateBody(star, orbitIndex, parent = null, siblings = []) {
   let maxR = rule.radius[1];
   if (parent) {
     maxR = Math.min(maxR, parent.radius * 0.1);
-    minR = Math.min(minR, maxR);
-  }
-  let radius;
-  if (parent) {
-    radius =
-      minR === maxR
-        ? minR * randomRange(0.8, 1.2)
-        : randomRange(minR, maxR);
-    let attempts = 0;
-    while (
-      siblings.some((s) => Math.abs(s.radius - radius) < 0.01) &&
-      attempts < 5
-    ) {
-      radius =
-        minR === maxR
-          ? minR * randomRange(0.8, 1.2)
-          : randomRange(minR, maxR);
-      attempts++;
+    minR = Math.min(minR, maxR * 0.5);
+    if (maxR - minR < 0.01) {
+      maxR = maxR * 1.2;
+      minR = maxR * 0.5;
     }
-    radius = Math.min(Math.max(radius, minR), maxR);
-  } else {
-    radius = randomRange(minR, maxR);
   }
+  let radius = randomRange(minR, maxR);
+  let attempts = 0;
+  while (
+    siblings.some((s) => Math.abs(s.radius - radius) < 0.01) &&
+    attempts < 5
+  ) {
+    radius = randomRange(minR, maxR);
+    attempts++;
+  }
+  radius = Math.min(Math.max(radius, minR), maxR);
 
-  // Determine final type based on resulting radius. Small bodies below 0.3
-  // Earth radii have no atmosphere and can only be rocky or lava worlds.
   let type = rule.name;
   if (type === 'gas giant' && radius <= 4) {
     type = 'ice';
@@ -91,18 +110,24 @@ export function generateBody(star, orbitIndex, parent = null, siblings = []) {
     atmosphere,
     moons: []
   };
-  if (!parent) {
-    body.moons = generateChildren(star, body);
-  }
+  body.moons = generateChildren(star, body);
   return body;
 }
 
-function randomRange(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function generateChildren(star, body) {
+  let maxMoons = 0;
+  for (const rule of MOON_RULES) {
+    if (body.radius > rule.minRadius) {
+      maxMoons = rule.maxMoons;
+      break;
+    }
+  }
+  const count = randomInt(0, maxMoons);
+  const moons = [];
+  for (let i = 0; i < count; i++) {
+    moons.push(generateStellarObject('moon', star, i, body, moons));
+  }
+  return moons;
 }
 
 function generateAtmosphere(type) {
@@ -119,10 +144,6 @@ function generateAtmosphere(type) {
   return composition;
 }
 
-// Choose a planet type based on distance and nearby neighbours.
-// Objects closer to the star favour rocky types, while distant ones
-// favour gaseous types. Large gas giants suppress the likelihood of
-// nearby rocky worlds.
 function selectRule(star, distance, prev) {
   const norm = Math.min(distance / (star.habitableZone[1] * 2), 1);
   const weights = PLANET_TYPES.map((t) => {
@@ -151,18 +172,11 @@ function selectRule(star, distance, prev) {
   return PLANET_TYPES[0];
 }
 
-function generateChildren(star, body) {
-  let maxMoons = 0;
-  for (const rule of MOON_RULES) {
-    if (body.radius > rule.minRadius) {
-      maxMoons = rule.maxMoons;
-      break;
-    }
-  }
-  const count = randomInt(0, maxMoons);
-  const moons = [];
-  for (let i = 0; i < count; i++) {
-    moons.push(generateBody(star, i, body, moons));
-  }
-  return moons;
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+function randomRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
