@@ -7,6 +7,8 @@ import {
 } from './data/planets.js';
 import { generateBodyName } from './name-generator.js';
 
+export const ATMOSPHERE_GRAVITY_THRESHOLD = 0.1;
+
 export class StellarObject {
   constructor(props) {
     Object.assign(this, props);
@@ -44,6 +46,7 @@ export function generateStellarObject(
       orbitRotation,
       resources: {},
       atmosphere: null,
+      atmosphericPressure: 0,
       moons: [],
       population: Math.floor(randomRange(100, 1000))
     });
@@ -91,7 +94,14 @@ export function generateStellarObject(
   const temperature =
     278 * Math.pow(star.luminosity, 0.25) / Math.sqrt(distance);
   const mass = Math.pow(radius, 3);
-  const gravity = randomRange(0.1, 3);
+  let gravity;
+  if (kind === 'moon' && parent) {
+    const maxGravity = parent.gravity * 0.1;
+    const minGravity = maxGravity * 0.5;
+    gravity = randomRange(minGravity, maxGravity);
+  } else {
+    gravity = randomRange(0.1, 3);
+  }
   const isHabitable =
     type === 'terrestrial' &&
     distance >= star.habitableZone[0] &&
@@ -112,7 +122,11 @@ export function generateStellarObject(
     acc[res] = Math.floor(randomRange(0, 100));
     return acc;
   }, {});
-  const atmosphere = radius < 0.3 ? null : generateAtmosphere(type);
+  const hasAtmosphere =
+    gravity >= ATMOSPHERE_GRAVITY_THRESHOLD &&
+    (PLANET_ATMOSPHERES[type] || []).length > 0;
+  const atmosphere = hasAtmosphere ? generateAtmosphere(type) : null;
+  const atmosphericPressure = hasAtmosphere ? gravity : 0;
   const name = generateBodyName(star.name, orbitIndex, parent);
   const body = new StellarObject({
     name,
@@ -131,6 +145,7 @@ export function generateStellarObject(
     orbitRotation,
     resources,
     atmosphere,
+    atmosphericPressure,
     moons: []
   });
   body.moons = generateChildren(star, body);
