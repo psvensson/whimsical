@@ -34,6 +34,7 @@ export function generateStellarObject(
       distance,
       orbitDistance,
       radius: 0.05,
+      gravity: parent.gravity,
       temperature: parent.temperature,
       isHabitable: true,
       orbitalPeriod: Math.sqrt(Math.pow(distance, 3) / star.mass),
@@ -89,6 +90,8 @@ export function generateStellarObject(
 
   const temperature =
     278 * Math.pow(star.luminosity, 0.25) / Math.sqrt(distance);
+  const mass = Math.pow(radius, 3);
+  const gravity = mass / Math.pow(radius, 2);
   const isHabitable =
     type === 'terrestrial' &&
     distance >= star.habitableZone[0] &&
@@ -113,6 +116,8 @@ export function generateStellarObject(
     type,
     distance,
     radius,
+    gravity,
+    mass,
     temperature,
     isHabitable,
     orbitalPeriod,
