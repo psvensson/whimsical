@@ -15,14 +15,14 @@ export function createStarSidebar(system, onGoToSystem) {
     </ul>
   `;
 
-  const btn = document.createElement('button');
-  btn.textContent = 'Go to system';
-  btn.addEventListener('click', () => {
-    if (typeof onGoToSystem === 'function') {
+  if (typeof onGoToSystem === 'function') {
+    const btn = document.createElement('button');
+    btn.textContent = 'Go to system';
+    btn.addEventListener('click', () => {
       onGoToSystem(system);
-    }
-  });
-  container.appendChild(btn);
+    });
+    container.appendChild(btn);
+  }
   return container;
 }
 
