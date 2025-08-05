@@ -6,13 +6,14 @@ export function createSystemOverview(
   onBack,
   onSelect,
   onOpenPlanet,
+  onSelectStar,
   selectedPlanet = null,
   width = 400,
   height = 400
 ) {
   const star = system.stars[0];
   const planets = system.planets;
-  const STAR_SCALE = 24;
+  const STAR_SCALE = 12;
   const PLANET_RADIUS = 16; // constant radius for all planets
 
   const baseStarRadius = star.size * 2 * STAR_SCALE;
@@ -130,10 +131,14 @@ export function createSystemOverview(
       }
     });
 
+    ctx.save();
     ctx.beginPath();
+    ctx.shadowBlur = starRadius * 2;
+    ctx.shadowColor = star.color;
     ctx.fillStyle = star.color;
     ctx.arc(cx, cy, starRadius, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
   }
 
   const overview = createOverview({
@@ -159,6 +164,18 @@ export function createSystemOverview(
     });
   }
 
+  function isStarClicked(event) {
+    const rect = canvas.getBoundingClientRect();
+    const scale = canvas.width / rect.width;
+    const x = (event.clientX - rect.left) * scale;
+    const y = (event.clientY - rect.top) * scale;
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const dx = cx - x;
+    const dy = cy - y;
+    return Math.sqrt(dx * dx + dy * dy) <= starRadius;
+  }
+
   canvas.addEventListener('mousemove', (e) => {
     const idx = getPlanetIndex(e);
     hoveredIndex = idx === -1 ? null : idx;
@@ -180,6 +197,12 @@ export function createSystemOverview(
         selectedIndex = idx;
         if (typeof onSelect === 'function') {
           onSelect(planetData[idx].planet);
+        }
+        draw();
+      } else if (isStarClicked(e)) {
+        selectedIndex = null;
+        if (typeof onSelectStar === 'function') {
+          onSelectStar(star);
         }
         draw();
       }

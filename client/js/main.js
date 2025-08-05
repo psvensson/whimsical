@@ -53,6 +53,10 @@ function init() {
         setSidebarContent(sidebar, planetContent);
       },
       (planet) => showPlanet(system, planet),
+      () => {
+        const starContent = createStarSidebar(system);
+        setSidebarContent(sidebar, starContent);
+      },
       selectedPlanet,
       overview.offsetWidth,
       overview.offsetHeight
