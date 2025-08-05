@@ -160,14 +160,9 @@ test('planetary objects have different gravity and pressure', () => {
     });
 });
 
-test('temperature span decreases with distance from star', () => {
+test('planet temperature span decreases with distance from star', () => {
   const star = generateStar();
-  const bodies = [];
-  star.planets.forEach((p) => {
-    bodies.push(p);
-    p.moons.forEach((m) => bodies.push(m));
-  });
-  const sorted = bodies
+  const sorted = star.planets
     .filter((b) => b.type !== 'base')
     .sort((a, b) => a.distance - b.distance);
   for (let i = 1; i < sorted.length; i++) {

@@ -89,12 +89,15 @@ export function generateStellarObject(
     type = 'ice';
   }
   if (radius < 0.3) {
-    type = Math.random() < 0.5 ? 'rocky' : 'lava';
+    const smallTypes = ['rocky', 'martian', 'venusian'];
+    type = smallTypes[randomInt(0, smallTypes.length - 1)];
   }
 
-  const temperature =
+  const baseTemperature =
     278 * Math.pow(star.luminosity, 0.25) / Math.sqrt(distance);
-  const temperatureSpan = 50 / distance;
+  const parentInfluence = parent ? (parent.gravity / step) * 10 : 0;
+  const temperature = baseTemperature + parentInfluence;
+  const temperatureSpan = 50 / distance + parentInfluence * 0.1;
   const mass = Math.pow(radius, 3);
   let gravity;
   if (kind === 'moon' && parent) {
@@ -192,6 +195,9 @@ function selectRule(star, distance, prev) {
   const norm = Math.min(distance / (star.habitableZone[1] * 2), 1);
   const weights = PLANET_TYPES.map((t) => {
     let weight = t.bias === 'outer' ? norm : 1 - norm;
+    if (t.name === 'rocky') {
+      weight *= 1 + (1 - norm);
+    }
     if (distance > t.maxDistance(star)) weight = 0;
     return { rule: t, weight: Math.max(weight, 0) };
   });
@@ -202,7 +208,9 @@ function selectRule(star, distance, prev) {
     Math.abs(distance - prev.distance) < 1
   ) {
     weights.forEach((w) => {
-      if (['lava', 'rocky', 'terrestrial'].includes(w.rule.name)) {
+      if (
+        ['rocky', 'terrestrial', 'martian', 'venusian'].includes(w.rule.name)
+      ) {
         w.weight *= 0.2;
       }
     });
