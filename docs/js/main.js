@@ -17,7 +17,7 @@ function init() {
 
   const sidebar = createSidebar();
   let overview;
-  const galaxy = generateGalaxy();
+  let galaxy;
 
   function showGalaxy(selectedSystem = null) {
     const galaxyOverview = createGalaxyOverview(
@@ -93,9 +93,13 @@ function init() {
     setSidebarContent(sidebar, planetContent);
   }
 
-  showGalaxy();
   main.append(sidebar);
   app.append(header, main);
+
+  setTimeout(() => {
+    galaxy = generateGalaxy(100);
+    showGalaxy();
+  }, 0);
 }
 
 document.addEventListener('DOMContentLoaded', init);
