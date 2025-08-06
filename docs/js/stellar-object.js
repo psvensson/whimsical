@@ -12,8 +12,7 @@ import {
   Shipyard,
   OrbitalMine,
   OrbitalManufactory,
-  OrbitalResearch,
-  JumpStation
+  OrbitalResearch
 } from './facilities/index.js';
 
 const generators = {
@@ -23,8 +22,7 @@ const generators = {
   shipyard: Shipyard,
   orbitalMine: OrbitalMine,
   orbitalManufactory: OrbitalManufactory,
-  orbitalResearch: OrbitalResearch,
-  jumpStation: JumpStation
+  orbitalResearch: OrbitalResearch
 };
 
 export { ATMOSPHERE_GRAVITY_THRESHOLD, randomInt, randomRange, adjustPlanetType, StellarObject };
