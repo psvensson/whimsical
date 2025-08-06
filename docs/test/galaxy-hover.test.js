@@ -39,6 +39,8 @@ const ctxStub = {
   arc() {},
   fill() {},
   stroke() {},
+  moveTo() {},
+  lineTo() {},
   measureText: () => ({ width: 50 }),
   fillText: (text) => {
     capturedText = text;
