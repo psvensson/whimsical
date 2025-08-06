@@ -1,7 +1,7 @@
 import { OrbitingBody } from './orbiting-body.js';
 import { randomInt, randomRange, EARTH_MASS_IN_SOLAR } from './util.js';
 import { MOON_RULES } from '../data/planets.js';
-import { Base } from './base.js';
+import { ORBITAL_FACILITY_CLASSES } from '../facilities/index.js';
 
 export class Moon extends OrbitingBody {
   static kind = 'moon';
@@ -37,9 +37,14 @@ export function generateMoons(star, body) {
   for (let i = 0; i < count; i++) {
     moons.push(Moon.generate(star, i, body, moons));
   }
-  if (body.features?.includes('base') && body.temperature <= 400) {
-    const base = Base.generate(star, moons.length, body);
-    if (base) moons.push(base);
+  if (body.features && body.temperature <= 400) {
+    for (const feature of body.features) {
+      const Facility = ORBITAL_FACILITY_CLASSES[feature];
+      if (Facility) {
+        const facility = Facility.generate(star, moons.length, body);
+        if (facility) moons.push(facility);
+      }
+    }
   }
   return moons;
 }

@@ -1,8 +1,8 @@
-import { StellarObject, randomRange } from './util.js';
+import { StellarObject, randomRange } from '../objects/util.js';
 
-export class Base extends StellarObject {
-  static kind = 'base';
+export class Facility extends StellarObject {}
 
+export class OrbitalFacility extends Facility {
   static generate(star, orbitIndex, parent) {
     if (parent.temperature > 400) return null;
     const orbitDistance = (orbitIndex + 1) * randomRange(0.001, 0.01);
@@ -10,10 +10,13 @@ export class Base extends StellarObject {
     const angle = Math.random() * Math.PI * 2;
     const eccentricity = Math.random() * 0.01;
     const orbitRotation = Math.random() * Math.PI * 2;
-    return new Base({
-      name: `Base ${orbitIndex + 1}`,
-      kind: 'base',
-      type: 'base',
+    const baseName = this.kind
+      ? this.kind.charAt(0).toUpperCase() + this.kind.slice(1)
+      : 'Facility';
+    return new this({
+      name: `${baseName} ${orbitIndex + 1}`,
+      kind: this.kind,
+      type: this.kind,
       distance,
       orbitDistance,
       radius: 0.05,
@@ -34,3 +37,6 @@ export class Base extends StellarObject {
     });
   }
 }
+
+export class SurfaceFacility extends Facility {}
+

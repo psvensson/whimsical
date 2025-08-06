@@ -77,7 +77,7 @@ export class OrbitingBody extends StellarObject {
       parent
     );
     const features = PLANET_FEATURES.filter((f) => {
-      if (f.category === 'planetary') {
+      if (f.category === 'surface') {
         if (type === 'gas' || temperature >= 200 || gravity >= 1.5) {
           return false;
         }

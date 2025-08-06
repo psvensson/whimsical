@@ -66,18 +66,18 @@ export const PLANET_FEATURES = [
   { name: 'orbitalManufactory', chance: 0.1, category: 'orbital' },
   { name: 'orbitalResearch', chance: 0.1, category: 'orbital' },
   { name: 'jumpStation', chance: 0.1, category: 'orbital' },
-  { name: 'mine', chance: 0.1, category: 'planetary' },
-  { name: 'spaceport', chance: 0.1, category: 'planetary' },
-  { name: 'manufactory', chance: 0.1, category: 'planetary' },
-  { name: 'research', chance: 0.1, category: 'planetary' }
+  { name: 'mine', chance: 0.1, category: 'surface' },
+  { name: 'spaceport', chance: 0.1, category: 'surface' },
+  { name: 'manufactory', chance: 0.1, category: 'surface' },
+  { name: 'research', chance: 0.1, category: 'surface' }
 ];
 
 export const ORBITAL_FACILITIES = PLANET_FEATURES.filter(
   (f) => f.category === 'orbital'
 ).map((f) => f.name);
 
-export const PLANETARY_FACILITIES = PLANET_FEATURES.filter(
-  (f) => f.category === 'planetary'
+export const SURFACE_FACILITIES = PLANET_FEATURES.filter(
+  (f) => f.category === 'surface'
 ).map((f) => f.name);
 
 export const PLANET_RESOURCES = {
