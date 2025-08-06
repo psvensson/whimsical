@@ -8,7 +8,8 @@ import {
   PLANET_RESOURCES,
   PLANET_ATMOSPHERES,
   MOON_RULES,
-  PLANET_FEATURES
+  PLANET_FEATURES,
+  ORBITAL_FACILITIES
 } from '../js/data/planets.js';
 import {
   ATMOSPHERE_GRAVITY_THRESHOLD,
@@ -29,7 +30,7 @@ function expectedMaxMoons(radius) {
 }
 
 function validateBody(body, star, parent = null) {
-  if (body.type === 'base') {
+  if (ORBITAL_FACILITIES.includes(body.type)) {
     assert.ok(body.distance > 0);
     assert.ok(typeof body.radius === 'number');
     assert.ok(typeof body.gravity === 'number');
@@ -100,7 +101,9 @@ function validateBody(body, star, parent = null) {
     assert.ok(body.gravity <= parent.gravity * 0.1);
   }
 
-  const naturalMoons = body.moons.filter((m) => m.type !== 'base');
+  const naturalMoons = body.moons.filter(
+    (m) => !ORBITAL_FACILITIES.includes(m.type)
+  );
   const maxMoons = expectedMaxMoons(body.radius);
   assert.ok(naturalMoons.length <= maxMoons);
   body.moons.forEach((m) => validateBody(m, star, body));
@@ -135,11 +138,14 @@ test('planet with five moons has unique moon radii', () => {
   for (let i = 0; i < 100 && !targetPlanet; i++) {
     const star = generateStar();
     targetPlanet = star.planets.find(
-      (p) => p.moons.filter((m) => m.type !== 'base').length === 5
+      (p) =>
+        p.moons.filter((m) => !ORBITAL_FACILITIES.includes(m.type)).length === 5
     );
   }
   assert.ok(targetPlanet, 'Failed to generate planet with five moons');
-  const radii = targetPlanet.moons.map((m) => m.radius);
+  const radii = targetPlanet.moons
+    .filter((m) => !ORBITAL_FACILITIES.includes(m.type))
+    .map((m) => m.radius);
   for (let i = 0; i < radii.length; i++) {
     for (let j = i + 1; j < radii.length; j++) {
       assert.ok(Math.abs(radii[i] - radii[j]) >= 0.01);
@@ -152,8 +158,8 @@ test('generated bodies include kind property', () => {
   star.planets.forEach((p) => {
     assert.equal(p.kind, 'planet');
     p.moons.forEach((m) => {
-      if (m.type === 'base') {
-        assert.equal(m.kind, 'base');
+      if (ORBITAL_FACILITIES.includes(m.type)) {
+        assert.equal(m.kind, m.type);
       } else {
         assert.equal(m.kind, 'moon');
       }
@@ -169,7 +175,7 @@ test('planetary objects have different gravity and pressure', () => {
     p.moons.forEach((m) => bodies.push(m));
   });
   bodies
-    .filter((b) => b.type !== 'base' && b.atmosphere)
+    .filter((b) => !ORBITAL_FACILITIES.includes(b.type) && b.atmosphere)
     .forEach((b) => {
       assert.ok(Math.abs(b.gravity - b.atmosphericPressure) > 1e-6);
     });
@@ -178,7 +184,7 @@ test('planetary objects have different gravity and pressure', () => {
 test('planet temperature span decreases with distance from star', () => {
   const star = generateStar();
   const sorted = star.planets
-    .filter((b) => b.type !== 'base')
+    .filter((b) => !ORBITAL_FACILITIES.includes(b.type))
     .sort((a, b) => a.distance - b.distance);
   for (let i = 1; i < sorted.length; i++) {
     assert.ok(sorted[i].temperatureSpan <= sorted[i - 1].temperatureSpan);

@@ -16,7 +16,7 @@ export function createPlanetOverview(
   const BASE_ICON_SIZE = 8 / 6;
   const MOON_ICON_RADIUS = 2;
   const ORBITAL_COLOR = '#0ff';
-  const PLANETARY_COLOR = '#ff0';
+  const SURFACE_COLOR = '#ff0';
 
   let planetRadius = PLANET_RADIUS;
   let objectData = [];
@@ -27,7 +27,7 @@ export function createPlanetOverview(
   function drawFeatureIcon(ctx, feature, x, y) {
     ctx.lineWidth = 1;
     const orbital = ORBITAL_FACILITIES.includes(feature);
-    ctx.fillStyle = orbital ? ORBITAL_COLOR : PLANETARY_COLOR;
+    ctx.fillStyle = orbital ? ORBITAL_COLOR : SURFACE_COLOR;
     ctx.strokeStyle = ctx.fillStyle;
     let size = ICON_SIZE;
     switch (feature) {
