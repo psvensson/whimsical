@@ -15,8 +15,8 @@ export function createSystemOverview(
   const star = system.stars[0];
   const planets = system.planets;
   const STAR_SCALE = 3;
-  const PLANET_RADIUS = 4; // constant radius for all planets
-  const ICON_SIZE = 4;
+  const PLANET_RADIUS = 10; // constant radius for all planets
+  const ICON_SIZE = 7;
   const BASE_ICON_SIZE = 8 / 6;
   const MOON_ICON_RADIUS = 2;
   const ORBITAL_COLOR = '#0ff';
@@ -40,15 +40,15 @@ export function createSystemOverview(
     ctx.strokeStyle = ctx.fillStyle;
     let size = ICON_SIZE;
     switch (feature) {
-      case 'base':
+      case 'Base':
         size = BASE_ICON_SIZE;
         ctx.fillRect(x, y - size / 2, size, size);
         break;
-      case 'shipyard':
+      case 'Shipyard':
         ctx.fillRect(x - size / 2, y - size / 2, size, size);
         ctx.fillRect(x - size / 6, y - size, size / 3, size / 2);
         break;
-      case 'orbitalMine':
+      case 'Orbital Mine':
         ctx.beginPath();
         ctx.moveTo(x, y + size / 2);
         ctx.lineTo(x + size / 2, y - size / 2);
@@ -56,7 +56,7 @@ export function createSystemOverview(
         ctx.closePath();
         ctx.fill();
         break;
-      case 'orbitalManufactory':
+      case 'Orbital Manufactory':
         ctx.beginPath();
         ctx.moveTo(x, y - size / 2);
         ctx.lineTo(x + size / 2, y);
@@ -65,16 +65,16 @@ export function createSystemOverview(
         ctx.closePath();
         ctx.fill();
         break;
-      case 'orbitalResearch':
+      case 'Orbital Research Facility':
         ctx.beginPath();
         ctx.arc(x, y, size / 2, 0, Math.PI * 2);
         ctx.fill();
         break;
-      case 'jumpStation':
+      case 'Jump Station':
         ctx.fillRect(x - size / 6, y - size / 2, size / 3, size);
         ctx.fillRect(x - size / 2, y - size / 6, size, size / 3);
         break;
-      case 'mine':
+      case 'Mine':
         ctx.beginPath();
         ctx.moveTo(x - size / 2, y - size / 2);
         ctx.lineTo(x + size / 2, y - size / 2);
@@ -82,7 +82,7 @@ export function createSystemOverview(
         ctx.closePath();
         ctx.fill();
         break;
-      case 'spaceport':
+      case 'Spaceport':
         ctx.beginPath();
         ctx.moveTo(x, y - size / 2);
         ctx.lineTo(x + size / 2, y);
@@ -91,7 +91,7 @@ export function createSystemOverview(
         ctx.closePath();
         ctx.fill();
         break;
-      case 'manufactory':
+      case 'Manufactory':
         ctx.fillRect(x - size / 2, y - size / 2, size, size);
         ctx.beginPath();
         ctx.moveTo(x - size / 2, y);
@@ -100,7 +100,7 @@ export function createSystemOverview(
         ctx.lineTo(x, y + size / 2);
         ctx.stroke();
         break;
-      case 'research':
+      case 'Research Facilityh':
         ctx.beginPath();
         ctx.moveTo(x - size / 2, y - size / 2);
         ctx.lineTo(x + size / 2, y + size / 2);

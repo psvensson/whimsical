@@ -7,7 +7,7 @@ export function createGalaxyOverview(
   onOpenSystem,
   selectedSystem = null
 ) {
-  const STAR_RADIUS = 6;
+  const STAR_RADIUS = 8;
   const size = galaxy.size;
 
   const systems = galaxy.systems.map(({ x, y, system }) => ({

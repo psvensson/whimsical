@@ -1,6 +1,6 @@
 import { SurfaceFacility } from '../facility.js';
 
 export class Mine extends SurfaceFacility {
-  static kind = 'mine';
+  static kind = 'Mine';
 }
 
