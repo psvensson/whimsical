@@ -48,11 +48,15 @@ test('init attaches core components to DOM', async () => {
   await new Promise((r) => setTimeout(r, 0));
   await new Promise((r) => setTimeout(r, 0));
   const app = document.getElementById('app');
-  assert.ok(app.querySelector('#header'));
+  const header = app.querySelector('#header');
+  assert.ok(header);
+  assert.ok(header.querySelector('.time-controls'));
   const main = app.querySelector('#main');
   assert.ok(main);
   assert.ok(main.querySelector('#sidebar'));
-  assert.ok(main.querySelector('.overview'));
+  const overview = main.querySelector('.overview');
+  assert.ok(overview);
+  assert.equal(overview.querySelector('.time-controls'), null);
   delete global.window;
   delete global.document;
   delete global.ResizeObserver;

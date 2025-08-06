@@ -147,7 +147,6 @@ export function createGalaxyOverview(
     update,
     draw,
     label: 'Galaxy',
-    showTime: false,
   });
 
   overview.container.classList.add('galaxy-overview');

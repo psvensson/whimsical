@@ -1,12 +1,4 @@
-import {
-  subscribe as subscribeTime,
-  play,
-  pause,
-  isPlaying,
-  getTime,
-} from '../time.js';
-
-export function createOverview({ update, draw, label, showTime = true } = {}) {
+export function createOverview({ update, draw, label } = {}) {
   const container = document.createElement('div');
   container.className = 'overview';
 
@@ -59,48 +51,6 @@ export function createOverview({ update, draw, label, showTime = true } = {}) {
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(canvas);
 
-  let unsubscribeTime = null;
-  if (showTime) {
-    const controls = document.createElement('div');
-    controls.className = 'time-controls';
-
-    const display = document.createElement('span');
-    display.className = 'time-display';
-
-    const playBtn = document.createElement('button');
-    playBtn.textContent = '▶';
-
-    const pauseBtn = document.createElement('button');
-    pauseBtn.textContent = '⏸';
-
-    function updateDisplay(months) {
-      const year = Math.floor(months / 12);
-      const month = months % 12;
-      display.textContent = `${year}:${month}`;
-      playBtn.disabled = isPlaying();
-      pauseBtn.disabled = !isPlaying();
-    }
-
-    playBtn.addEventListener('click', () => {
-      play();
-      updateDisplay(getTime());
-    });
-    pauseBtn.addEventListener('click', () => {
-      pause();
-      updateDisplay(getTime());
-    });
-
-    controls.append(display, playBtn, pauseBtn);
-    container.appendChild(controls);
-
-    unsubscribeTime = subscribeTime((months) => {
-      updateDisplay(months);
-      if (typeof update === 'function') update(zoom);
-      if (typeof draw === 'function') draw(zoom);
-    });
-    updateDisplay(getTime());
-  }
-
   requestAnimationFrame(resize);
 
   const renderInterval = setInterval(() => {
@@ -115,7 +65,6 @@ export function createOverview({ update, draw, label, showTime = true } = {}) {
     destroyed = true;
     resizeObserver.disconnect();
     clearInterval(renderInterval);
-    if (unsubscribeTime) unsubscribeTime();
   }
 
   container.destroy = destroy;
