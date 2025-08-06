@@ -47,7 +47,12 @@ test('displays habitable world count', async () => {
   setupDom();
   const habitableMoon = { isHabitable: true, kind: 'moon', moons: [] };
   const base = { isHabitable: true, kind: 'base', moons: [] };
-  const planet = { isHabitable: true, kind: 'planet', moons: [habitableMoon, base] };
+  const shipyard = { isHabitable: true, kind: 'shipyard', moons: [] };
+  const planet = {
+    isHabitable: true,
+    kind: 'planet',
+    moons: [habitableMoon, base, shipyard],
+  };
   const star = { name: 'TestStar', color: '#fff', planets: [planet] };
   const galaxy = { size: 1, systems: [{ x: 0, y: 0, system: { stars: [star] } }] };
 

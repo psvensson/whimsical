@@ -1,4 +1,5 @@
 import { createOverview } from './overview.js';
+import { ORBITAL_FACILITIES } from '../data/planets.js';
 
 export function createGalaxyOverview(
   galaxy,
@@ -19,7 +20,7 @@ export function createGalaxyOverview(
   function countHabitable(bodies) {
     return bodies.reduce((acc, body) => {
       let total = acc;
-      if (body.isHabitable && body.kind !== 'base') total++;
+      if (body.isHabitable && !ORBITAL_FACILITIES.includes(body.kind)) total++;
       if (body.moons?.length) {
         total += countHabitable(body.moons);
       }
@@ -44,6 +45,7 @@ export function createGalaxyOverview(
   let ctx;
 
   function update(zoom) {
+    if (canvas.width === 0 || canvas.height === 0) return;
     const scale =
       (Math.min(canvas.width, canvas.height) / (size * 2 + 1)) * zoom;
     const offsetX = (canvas.width - scale * (size * 2 + 1)) / 2;

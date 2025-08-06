@@ -88,6 +88,7 @@ test('moving over empty space does not crash', async () => {
   document.body.appendChild(overview);
 
   await new Promise((r) => setTimeout(r, 0));
+  capturedText = null;
 
   const canvas = overview.querySelector('canvas');
   const event = new window.MouseEvent('mousemove', {
