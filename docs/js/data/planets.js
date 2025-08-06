@@ -88,6 +88,12 @@ export const PLANET_ATMOSPHERES = {
   gas: ['hydrogen', 'helium', 'methane', 'ammonia']
 };
 
+export const PLANET_PRESSURES = {
+  martian: { range: [0.01, 0.3] },
+  venusian: { range: [5, 10] },
+  default: { multiplier: 1.2 }
+};
+
 // Rules for determining the maximum number of moons based on planet size
 export const MOON_RULES = [
   { minRadius: 3, maxMoons: 5 },
