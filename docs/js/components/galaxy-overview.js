@@ -16,6 +16,26 @@ export function createGalaxyOverview(
     system,
   }));
 
+  function countHabitable(bodies) {
+    return bodies.reduce((acc, body) => {
+      let total = acc;
+      if (body.isHabitable) total++;
+      if (body.moons?.length) {
+        total += countHabitable(body.moons);
+      }
+      return total;
+    }, 0);
+  }
+
+  const habitableWorldCount = galaxy.systems.reduce((count, { system }) => {
+    return (
+      count +
+      system.stars.reduce((starCount, star) => {
+        return starCount + countHabitable(star.planets || []);
+      }, 0)
+    );
+  }, 0);
+
   let starPositions = [];
   let hoveredIndex = null;
   let selectedIndex =
@@ -130,6 +150,11 @@ export function createGalaxyOverview(
   });
 
   overview.container.classList.add('galaxy-overview');
+
+  const habitableEl = document.createElement('div');
+  habitableEl.className = 'habitable-count';
+  habitableEl.textContent = `Habitable Worlds: ${habitableWorldCount}`;
+  overview.container.appendChild(habitableEl);
 
   canvas = overview.canvas;
   ctx = overview.ctx;
