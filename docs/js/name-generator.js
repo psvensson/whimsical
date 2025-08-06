@@ -4,11 +4,8 @@
 // Use the modern ES module build that ends with `.js` so that static servers
 // correctly set the `Content-Type` header. The previous `index.m.js` extension
 // caused the browser to block the module due to an empty MIME type.
-import {
-  uniqueNamesGenerator,
-  adjectives,
-  animals
-} from '../node_modules/unique-names-generator/dist/index.modern.js';
+import * as uniqueNamesGeneratorPkg from '../node_modules/unique-names-generator/dist/index.modern.js';
+const { uniqueNamesGenerator, adjectives, animals } = uniqueNamesGeneratorPkg;
 
 export function generateUniqueName() {
   return uniqueNamesGenerator({
