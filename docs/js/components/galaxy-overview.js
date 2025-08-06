@@ -6,7 +6,7 @@ export function createGalaxyOverview(
   onOpenSystem,
   selectedSystem = null
 ) {
-  const STAR_RADIUS = 12;
+  const STAR_RADIUS = 6;
   const size = galaxy.size;
 
   const systems = galaxy.systems.map(({ x, y, system }) => ({
@@ -161,6 +161,7 @@ export function createGalaxyOverview(
 
   function getStarIndex(event) {
     const rect = canvas.getBoundingClientRect();
+    if (canvas.width === 0 || rect.width === 0) return -1;
     const scale = canvas.width / rect.width;
     const x = (event.clientX - rect.left) * scale;
     const y = (event.clientY - rect.top) * scale;

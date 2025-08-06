@@ -55,9 +55,30 @@ export const PLANET_COLORS = {
 };
 
 export const PLANET_FEATURES = [
-  { name: 'base', chance: 0.1 },
-  { name: 'mine', chance: 0.1 }
+  { name: 'base', chance: 0.1, category: 'orbital' },
+  { name: 'shipyard', chance: 0.1, category: 'orbital' },
+  {
+    name: 'orbitalMine',
+    chance: 0.1,
+    category: 'orbital',
+    condition: (body) => body.type === 'gas'
+  },
+  { name: 'orbitalManufactory', chance: 0.1, category: 'orbital' },
+  { name: 'orbitalResearch', chance: 0.1, category: 'orbital' },
+  { name: 'jumpStation', chance: 0.1, category: 'orbital' },
+  { name: 'mine', chance: 0.1, category: 'planetary' },
+  { name: 'spaceport', chance: 0.1, category: 'planetary' },
+  { name: 'manufactory', chance: 0.1, category: 'planetary' },
+  { name: 'research', chance: 0.1, category: 'planetary' }
 ];
+
+export const ORBITAL_FACILITIES = PLANET_FEATURES.filter(
+  (f) => f.category === 'orbital'
+).map((f) => f.name);
+
+export const PLANETARY_FACILITIES = PLANET_FEATURES.filter(
+  (f) => f.category === 'planetary'
+).map((f) => f.name);
 
 export const PLANET_RESOURCES = {
   rocky: ['iron', 'cobalt', 'uranium', 'carbon', 'silicon', 'nickel', 'water'],
