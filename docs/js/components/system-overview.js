@@ -1,4 +1,4 @@
-import { PLANET_COLORS } from '../data/planets.js';
+import { PLANET_COLORS, ORBITAL_FACILITIES } from '../data/planets.js';
 import { createOverview } from './overview.js';
 import { getPlanetTime } from '../time.js';
 
@@ -14,8 +14,13 @@ export function createSystemOverview(
 ) {
   const star = system.stars[0];
   const planets = system.planets;
-  const STAR_SCALE = 12;
-  const PLANET_RADIUS = 16; // constant radius for all planets
+  const STAR_SCALE = 6;
+  const PLANET_RADIUS = 8; // constant radius for all planets
+  const ICON_SIZE = 4;
+  const BASE_ICON_SIZE = 8 / 6;
+  const MOON_ICON_RADIUS = 2;
+  const ORBITAL_COLOR = '#0ff';
+  const PLANETARY_COLOR = '#ff0';
 
   const baseStarRadius = star.size * 2 * STAR_SCALE;
   const basePlanetRadius = PLANET_RADIUS;
@@ -27,6 +32,85 @@ export function createSystemOverview(
     selectedPlanet ? planets.findIndex((p) => p === selectedPlanet) : null;
   let canvas;
   let ctx;
+
+  function drawFeatureIcon(ctx, feature, x, y) {
+    ctx.lineWidth = 1;
+    const orbital = ORBITAL_FACILITIES.includes(feature);
+    ctx.fillStyle = orbital ? ORBITAL_COLOR : PLANETARY_COLOR;
+    ctx.strokeStyle = ctx.fillStyle;
+    let size = ICON_SIZE;
+    switch (feature) {
+      case 'base':
+        size = BASE_ICON_SIZE;
+        ctx.fillRect(x, y - size / 2, size, size);
+        break;
+      case 'shipyard':
+        ctx.fillRect(x - size / 2, y - size / 2, size, size);
+        ctx.fillRect(x - size / 6, y - size, size / 3, size / 2);
+        break;
+      case 'orbitalMine':
+        ctx.beginPath();
+        ctx.moveTo(x, y + size / 2);
+        ctx.lineTo(x + size / 2, y - size / 2);
+        ctx.lineTo(x - size / 2, y - size / 2);
+        ctx.closePath();
+        ctx.fill();
+        break;
+      case 'orbitalManufactory':
+        ctx.beginPath();
+        ctx.moveTo(x, y - size / 2);
+        ctx.lineTo(x + size / 2, y);
+        ctx.lineTo(x, y + size / 2);
+        ctx.lineTo(x - size / 2, y);
+        ctx.closePath();
+        ctx.fill();
+        break;
+      case 'orbitalResearch':
+        ctx.beginPath();
+        ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      case 'jumpStation':
+        ctx.fillRect(x - size / 6, y - size / 2, size / 3, size);
+        ctx.fillRect(x - size / 2, y - size / 6, size, size / 3);
+        break;
+      case 'mine':
+        ctx.beginPath();
+        ctx.moveTo(x - size / 2, y - size / 2);
+        ctx.lineTo(x + size / 2, y - size / 2);
+        ctx.lineTo(x, y + size / 2);
+        ctx.closePath();
+        ctx.fill();
+        break;
+      case 'spaceport':
+        ctx.beginPath();
+        ctx.moveTo(x, y - size / 2);
+        ctx.lineTo(x + size / 2, y);
+        ctx.lineTo(x, y + size / 2);
+        ctx.lineTo(x - size / 2, y);
+        ctx.closePath();
+        ctx.fill();
+        break;
+      case 'manufactory':
+        ctx.fillRect(x - size / 2, y - size / 2, size, size);
+        ctx.beginPath();
+        ctx.moveTo(x - size / 2, y);
+        ctx.lineTo(x + size / 2, y);
+        ctx.moveTo(x, y - size / 2);
+        ctx.lineTo(x, y + size / 2);
+        ctx.stroke();
+        break;
+      case 'research':
+        ctx.beginPath();
+        ctx.moveTo(x - size / 2, y - size / 2);
+        ctx.lineTo(x + size / 2, y + size / 2);
+        ctx.moveTo(x + size / 2, y - size / 2);
+        ctx.lineTo(x - size / 2, y + size / 2);
+        ctx.stroke();
+        break;
+    }
+    return feature === 'base' ? BASE_ICON_SIZE : ICON_SIZE;
+  }
 
   function updateLayout(zoom) {
     const cx = canvas.width / 2;
@@ -89,27 +173,18 @@ export function createSystemOverview(
       ctx.arc(px, py, planetRadius, 0, Math.PI * 2);
       ctx.fill();
 
-      let iconX = px + planetRadius + 8;
+      let iconX = px + planetRadius + ICON_SIZE;
       const iconY = py;
       if (planet.features) {
         planet.features.forEach((f) => {
-          ctx.fillStyle = '#fff';
-          if (f === 'base') {
-            ctx.fillRect(iconX, iconY - 4, 8, 8);
-          } else if (f === 'mine') {
-            ctx.beginPath();
-            ctx.moveTo(iconX, iconY - 6);
-            ctx.lineTo(iconX + 8, iconY - 6);
-            ctx.lineTo(iconX + 4, iconY + 2);
-            ctx.fill();
-          }
-          iconX += 12;
+          const size = drawFeatureIcon(ctx, f, iconX, iconY);
+          iconX += size + 4;
         });
       }
       if (planet.moons && planet.moons.length) {
         ctx.beginPath();
         ctx.fillStyle = '#fff';
-        ctx.arc(iconX + 4, iconY, 4, 0, Math.PI * 2);
+        ctx.arc(iconX + MOON_ICON_RADIUS, iconY, MOON_ICON_RADIUS, 0, Math.PI * 2);
         ctx.fill();
       }
 

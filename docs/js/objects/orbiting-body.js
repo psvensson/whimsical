@@ -76,9 +76,17 @@ export class OrbitingBody extends StellarObject {
       star,
       parent
     );
-    const features = PLANET_FEATURES.filter((f) => Math.random() < f.chance).map(
-      (f) => f.name
-    );
+    const features = PLANET_FEATURES.filter((f) => {
+      if (f.category === 'planetary') {
+        if (type === 'gas' || temperature >= 200 || gravity >= 1.5) {
+          return false;
+        }
+      }
+      if (f.name === 'orbitalMine' && type !== 'gas') {
+        return false;
+      }
+      return Math.random() < f.chance;
+    }).map((f) => f.name);
     const angle = Math.random() * Math.PI * 2;
     const eccentricity = Math.random() ** 2 * 0.6;
     const orbitRotation = Math.random() * Math.PI * 2;
