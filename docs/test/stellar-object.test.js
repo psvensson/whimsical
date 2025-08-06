@@ -62,6 +62,9 @@ function validateBody(body, star, parent = null) {
     assert.ok(Number.isInteger(amount));
     assert.ok(amount >= 0 && amount < 100);
   }
+  if (body.type === 'gas' && body.atmosphere) {
+    assert.deepEqual(body.resources, body.atmosphere);
+  }
 
   if (
     body.gravity < ATMOSPHERE_GRAVITY_THRESHOLD ||
@@ -191,6 +194,21 @@ test('ice and water transform based on temperature', () => {
   // ice below freezing stays ice
   assert.equal(adjustPlanetType('ice', 260), 'ice');
 });
+
+ test('gas objects use atmosphere as resources', () => {
+   let gasBody = null;
+   for (let i = 0; i < 100 && !gasBody; i++) {
+     const star = generateStar();
+     const bodies = [];
+     star.planets.forEach((p) => {
+       bodies.push(p);
+       p.moons.forEach((m) => bodies.push(m));
+     });
+     gasBody = bodies.find((b) => b.type === 'gas');
+   }
+   assert.ok(gasBody, 'Failed to generate gas body');
+   assert.deepEqual(gasBody.resources, gasBody.atmosphere);
+ });
 
 test('bases cannot orbit extremely hot objects', () => {
   const star = { mass: 1, luminosity: 1 };
