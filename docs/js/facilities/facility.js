@@ -1,4 +1,4 @@
-import { StellarObject, randomRange } from '../objects/util.js';
+import { StellarObject, randomRange, EARTH_MASS_IN_SOLAR } from '../objects/util.js';
 
 export class Facility extends StellarObject {}
 
@@ -10,6 +10,10 @@ export class OrbitalFacility extends Facility {
     const angle = Math.random() * Math.PI * 2;
     const eccentricity = Math.random() * 0.01;
     const orbitRotation = Math.random() * Math.PI * 2;
+    const parentMassInSolar = parent.mass * EARTH_MASS_IN_SOLAR;
+    const orbitalPeriod = Math.sqrt(
+      Math.pow(orbitDistance, 3) / parentMassInSolar
+    );
     const baseName = this.kind
       ? this.kind.charAt(0).toUpperCase() + this.kind.slice(1)
       : 'Facility';
@@ -24,7 +28,7 @@ export class OrbitalFacility extends Facility {
       temperature: parent.temperature,
       temperatureSpan: parent.temperatureSpan,
       isHabitable: true,
-      orbitalPeriod: Math.sqrt(Math.pow(distance, 3) / star.mass),
+      orbitalPeriod,
       features: [],
       angle,
       eccentricity,
