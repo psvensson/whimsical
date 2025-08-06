@@ -80,6 +80,24 @@ export function createGalaxyOverview(
         ctx.fill();
       }
 
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
+      const crossLen = STAR_RADIUS / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx - crossLen, cy);
+      ctx.lineTo(cx + crossLen, cy);
+      ctx.moveTo(cx, cy - crossLen);
+      ctx.lineTo(cx, cy + crossLen);
+      ctx.stroke();
+
+      const diagLen = STAR_RADIUS / 3;
+      ctx.beginPath();
+      ctx.moveTo(cx - diagLen, cy - diagLen);
+      ctx.lineTo(cx + diagLen, cy + diagLen);
+      ctx.moveTo(cx - diagLen, cy + diagLen);
+      ctx.lineTo(cx + diagLen, cy - diagLen);
+      ctx.stroke();
+
       if (idx === hoveredIndex || idx === selectedIndex) {
         ctx.beginPath();
         ctx.strokeStyle = 'rgba(255,255,255,0.8)';

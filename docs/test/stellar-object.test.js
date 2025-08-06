@@ -79,7 +79,15 @@ function validateBody(body, star, parent = null) {
     body.distance <= star.habitableZone[1];
   const gravityOk = body.gravity >= 0.5 && body.gravity <= 1.5;
   const tempOk = body.temperature >= 260 && body.temperature <= 320;
-  if (body.type === 'terrestrial' && inHZ && gravityOk && tempOk) {
+  const pressureOk =
+    body.atmosphericPressure >= 0.5 && body.atmosphericPressure <= 2;
+  if (
+    ['terrestrial', 'water'].includes(body.type) &&
+    inHZ &&
+    gravityOk &&
+    tempOk &&
+    pressureOk
+  ) {
     assert.equal(body.isHabitable, true);
   } else {
     assert.equal(body.isHabitable, false);

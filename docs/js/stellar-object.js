@@ -8,6 +8,7 @@ import {
 import { generateBodyName } from './name-generator.js';
 
 export const ATMOSPHERE_GRAVITY_THRESHOLD = 0.1;
+const EARTH_MASS_IN_SOLAR = 1 / 332946;
 
 const SOLAR_SYSTEM_TEMPERATURES = [
   { distance: 0.39, temp: 440 }, // Mercury
@@ -153,15 +154,13 @@ export function generateStellarObject(
   } else {
     gravity = randomRange(0.1, 3);
   }
-  const isHabitable =
-    type === 'terrestrial' &&
-    distance >= star.habitableZone[0] &&
-    distance <= star.habitableZone[1] &&
-    gravity >= 0.5 &&
-    gravity <= 1.5 &&
-    temperature >= 260 &&
-    temperature <= 320;
-  const orbitalPeriod = Math.sqrt(Math.pow(distance, 3) / star.mass); // in Earth years
+  let orbitalPeriod;
+  if (kind === 'moon' && parent) {
+    const parentMassInSolar = parent.mass * EARTH_MASS_IN_SOLAR;
+    orbitalPeriod = Math.sqrt(Math.pow(step, 3) / parentMassInSolar);
+  } else {
+    orbitalPeriod = Math.sqrt(Math.pow(distance, 3) / star.mass); // in Earth years
+  }
   const features = PLANET_FEATURES.filter((f) => Math.random() < f.chance).map(
     (f) => f.name
   );
@@ -187,6 +186,19 @@ export function generateStellarObject(
       atmosphericPressure = gravity * 1.2;
     }
   }
+  const inHZ =
+    distance >= star.habitableZone[0] &&
+    distance <= star.habitableZone[1];
+  const gravityOk = gravity >= 0.5 && gravity <= 1.5;
+  const tempOk = temperature >= 260 && temperature <= 320;
+  const pressureOk =
+    atmosphericPressure >= 0.5 && atmosphericPressure <= 2;
+  const isHabitable =
+    ['terrestrial', 'water'].includes(type) &&
+    inHZ &&
+    gravityOk &&
+    tempOk &&
+    pressureOk;
   const name = generateBodyName(star.name, orbitIndex, parent);
   const body = new StellarObject({
     name,
