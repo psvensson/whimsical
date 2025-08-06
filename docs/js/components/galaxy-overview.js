@@ -147,6 +147,7 @@ export function createGalaxyOverview(
     update,
     draw,
     label: 'Galaxy',
+    showTime: false,
   });
 
   overview.container.classList.add('galaxy-overview');
@@ -212,5 +213,6 @@ export function createGalaxyOverview(
     }
   });
 
+  overview.container.destroy = overview.destroy;
   return overview.container;
 }

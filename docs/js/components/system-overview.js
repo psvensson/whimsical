@@ -1,5 +1,6 @@
 import { PLANET_COLORS } from '../data/planets.js';
 import { createOverview } from './overview.js';
+import { getTime } from '../time.js';
 
 export function createSystemOverview(
   system,
@@ -46,20 +47,16 @@ export function createSystemOverview(
     const scale = scaleBase * zoom;
 
     starRadius = Math.max(baseStarRadius * zoom, 0);
+    const timeYears = getTime() / 12;
     planetData = planets.map((planet) => {
-      const dist = planet.distance || 0;
+      const dist = planet.orbitDistance || planet.distance || 0;
       const orbitA = Math.max(dist * scale, 0);
       const e = planet.eccentricity || 0;
       const orbitB = Math.max(orbitA * Math.sqrt(Math.max(0, 1 - e * e)), 0);
       const rotation = planet.orbitRotation || 0;
-      const theta = planet.angle;
-      const r = (orbitA * (1 - e * e)) / (1 + e * Math.cos(theta));
-      const x = r * Math.cos(theta);
-      const y = r * Math.sin(theta);
-      const xRot = x * Math.cos(rotation) - y * Math.sin(rotation);
-      const yRot = x * Math.sin(rotation) + y * Math.cos(rotation);
-      const px = cx + xRot;
-      const py = cy + yRot;
+      const { x, y, theta } = planet.getOrbitPosition(timeYears);
+      const px = cx + x * scale;
+      const py = cy + y * scale;
       const planetRadius = Math.max(
         0,
         Math.min(basePlanetRadius * zoom, starRadius / 4)
@@ -225,12 +222,12 @@ export function createSystemOverview(
   backBtn.textContent = 'Back';
   backBtn.className = 'back-btn';
   backBtn.addEventListener('click', () => {
-    overview.destroy();
     if (typeof onBack === 'function') {
       onBack();
     }
   });
 
   overview.container.appendChild(backBtn);
+  overview.container.destroy = overview.destroy;
   return overview.container;
 }

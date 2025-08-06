@@ -53,6 +53,27 @@ export class StellarObject {
   constructor(props) {
     Object.assign(this, props);
   }
+
+  getAngleAt(timeYears = 0) {
+    const period = this.orbitalPeriod || 0;
+    const base = this.angle || 0;
+    if (!period) return base;
+    const delta = (timeYears / period) * Math.PI * 2;
+    return base + delta;
+  }
+
+  getOrbitPosition(timeYears = 0) {
+    const a = this.orbitDistance || 0;
+    const e = this.eccentricity || 0;
+    const theta = this.getAngleAt(timeYears);
+    const r = a === 0 ? 0 : (a * (1 - e * e)) / (1 + e * Math.cos(theta));
+    const x = r * Math.cos(theta);
+    const y = r * Math.sin(theta);
+    const rot = this.orbitRotation || 0;
+    const xRot = x * Math.cos(rot) - y * Math.sin(rot);
+    const yRot = x * Math.sin(rot) + y * Math.cos(rot);
+    return { x: xRot, y: yRot, r, theta };
+  }
 }
 
 export function randomInt(min, max) {

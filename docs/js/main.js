@@ -29,6 +29,7 @@ export function init() {
       showSystem,
       selectedSystem
     );
+    overview?.destroy?.();
     if (overview) {
       main.replaceChild(galaxyOverview, overview);
     } else {
@@ -61,6 +62,7 @@ export function init() {
       overview.offsetWidth,
       overview.offsetHeight
     );
+    overview?.destroy?.();
     main.replaceChild(systemView, overview);
     overview = systemView;
     const starContent = createStarSidebar(system);
@@ -87,6 +89,7 @@ export function init() {
       overview.offsetWidth,
       overview.offsetHeight
     );
+    overview?.destroy?.();
     main.replaceChild(planetView, overview);
     overview = planetView;
     const planetContent = createPlanetSidebar(planet);

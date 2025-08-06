@@ -1,5 +1,6 @@
 import { PLANET_COLORS } from '../data/planets.js';
 import { createOverview } from './overview.js';
+import { getTime } from '../time.js';
 
 export function createPlanetOverview(
   planet,
@@ -31,20 +32,16 @@ export function createPlanetOverview(
       0.1
     );
     const scale = scaleBase * zoom;
+    const timeYears = getTime() / 12;
     objectData = objects.map((obj) => {
       const dist = obj.orbitDistance || obj.distance - planet.distance;
       const orbitA = Math.max(dist * scale, 0);
       const e = obj.eccentricity || 0;
       const orbitB = Math.max(orbitA * Math.sqrt(Math.max(0, 1 - e * e)), 0);
       const rotation = obj.orbitRotation || 0;
-      const theta = obj.angle || 0;
-      const r = (orbitA * (1 - e * e)) / (1 + e * Math.cos(theta));
-      const x = r * Math.cos(theta);
-      const y = r * Math.sin(theta);
-      const xRot = x * Math.cos(rotation) - y * Math.sin(rotation);
-      const yRot = x * Math.sin(rotation) + y * Math.cos(rotation);
-      const px = cx + xRot;
-      const py = cy + yRot;
+      const { x, y, theta } = obj.getOrbitPosition(timeYears);
+      const px = cx + x * scale;
+      const py = cy + y * scale;
       const objRadius = Math.max(OBJECT_RADIUS * zoom, 0);
       return { obj, orbitA, orbitB, e, rotation, theta, px, py, objRadius };
     });
@@ -199,12 +196,12 @@ export function createPlanetOverview(
   backBtn.textContent = 'Back';
   backBtn.className = 'back-btn';
   backBtn.addEventListener('click', () => {
-    overview.destroy();
     if (typeof onBack === 'function') {
       onBack();
     }
   });
   overview.container.appendChild(backBtn);
+  overview.container.destroy = overview.destroy;
 
   return overview.container;
 }

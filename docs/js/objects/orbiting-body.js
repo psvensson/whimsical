@@ -64,6 +64,9 @@ export class OrbitingBody extends StellarObject {
     const parentInfluence = parent ? (parent.gravity / step) * 10 : 0;
     const temperature = baseTemperature + parentInfluence;
     type = adjustPlanetType(type, temperature);
+    if (type === 'gas' && radius <= 4) {
+      type = 'ice';
+    }
     const temperatureSpan = 50 / distance + parentInfluence * 0.1;
     const mass = Math.pow(radius, 3);
     const gravity = this.calculateGravity(parent);
@@ -106,6 +109,7 @@ export class OrbitingBody extends StellarObject {
       kind: this.kind,
       type,
       distance,
+      orbitDistance: step,
       radius,
       gravity,
       mass,
