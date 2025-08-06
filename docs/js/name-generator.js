@@ -1,11 +1,27 @@
-// Import the module using a relative path so that the browser can resolve it
-// without a bundler or import maps. This fixes the "bare specifier" error
-// when `name-generator.js` is loaded in the browser.
-// Use the modern ES module build that ends with `.js` so that static servers
-// correctly set the `Content-Type` header. The previous `index.m.js` extension
-// caused the browser to block the module due to an empty MIME type.
-import * as uniqueNamesGeneratorPkg from '../node_modules/unique-names-generator/dist/index.modern.js';
-const { uniqueNamesGenerator, adjectives, animals } = uniqueNamesGeneratorPkg;
+// The `unique-names-generator` package ships multiple builds.  The browser can
+// load the modern ES module version, but Node.js (used by the tests) cannot
+// parse that file because the package does not declare itself as an ES module.
+// To support both environments we dynamically import the appropriate build:
+//
+//   - In the browser we use the modern ESM bundle so that a plain static server
+//     can resolve the module without bundling or import maps.
+//   - In Node.js we fall back to the UMD build, which can be loaded in a CommonJS
+//     context.  When imported via ESM it exposes its contents on the `default`
+//     export.
+//
+// Top‑level `await` is used so that by the time this module's exports are
+// consumed the dictionary is already available.
+let uniqueNamesGenerator, adjectives, animals;
+if (typeof window === 'undefined') {
+  ({ default: { uniqueNamesGenerator, adjectives, animals } } =
+    await import(
+      '../node_modules/unique-names-generator/dist/index.umd.js'
+    ));
+} else {
+  ({ uniqueNamesGenerator, adjectives, animals } = await import(
+    '../node_modules/unique-names-generator/dist/index.modern.js'
+  ));
+}
 
 export function generateUniqueName() {
   return uniqueNamesGenerator({
