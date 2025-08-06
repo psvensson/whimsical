@@ -101,5 +101,9 @@ export function init() {
     showGalaxy();
   }, 0);
 }
-
-document.addEventListener('DOMContentLoaded', init);
+// Ensure init runs even if DOMContentLoaded has already fired
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
