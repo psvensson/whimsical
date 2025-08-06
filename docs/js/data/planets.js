@@ -31,6 +31,12 @@ export const PLANET_TYPES = [
     radius: [0.5, 3]
   },
   {
+    name: 'water',
+    bias: 'outer',
+    maxDistance: star => star.habitableZone[1] * 2,
+    radius: [0.5, 3]
+  },
+  {
     name: 'gas giant',
     bias: 'outer',
     maxDistance: () => Infinity,
@@ -44,6 +50,7 @@ export const PLANET_COLORS = {
   venusian: '#e6b422',
   terrestrial: '#2ecc71',
   ice: '#87cefa',
+  water: '#1e90ff',
   'gas giant': '#f1c40f'
 };
 
@@ -67,6 +74,7 @@ export const PLANET_RESOURCES = {
     'oxygen'
   ],
   ice: ['water', 'methane', 'ammonia', 'nitrogen'],
+  water: ['water', 'methane', 'ammonia', 'nitrogen'],
   'gas giant': ['hydrogen', 'helium', 'methane', 'ammonia']
 };
 
@@ -76,6 +84,7 @@ export const PLANET_ATMOSPHERES = {
   venusian: ['carbon dioxide', 'nitrogen'],
   terrestrial: ['nitrogen', 'oxygen', 'argon'],
   ice: ['nitrogen', 'methane'],
+  water: ['nitrogen', 'oxygen', 'water vapor'],
   'gas giant': ['hydrogen', 'helium', 'methane', 'ammonia']
 };
 

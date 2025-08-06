@@ -9,6 +9,42 @@ import { generateBodyName } from './name-generator.js';
 
 export const ATMOSPHERE_GRAVITY_THRESHOLD = 0.1;
 
+const SOLAR_SYSTEM_TEMPERATURES = [
+  { distance: 0.39, temp: 440 }, // Mercury
+  { distance: 0.72, temp: 737 }, // Venus
+  { distance: 1, temp: 288 }, // Earth
+  { distance: 1.52, temp: 210 }, // Mars
+  { distance: 5.2, temp: 165 }, // Jupiter
+  { distance: 9.58, temp: 134 }, // Saturn
+  { distance: 19.22, temp: 76 }, // Uranus
+  { distance: 30.05, temp: 72 } // Neptune
+];
+
+function interpolateSolarTemperature(distance) {
+  if (distance <= SOLAR_SYSTEM_TEMPERATURES[0].distance)
+    return SOLAR_SYSTEM_TEMPERATURES[0].temp;
+  for (let i = 1; i < SOLAR_SYSTEM_TEMPERATURES.length; i++) {
+    const prev = SOLAR_SYSTEM_TEMPERATURES[i - 1];
+    const curr = SOLAR_SYSTEM_TEMPERATURES[i];
+    if (distance <= curr.distance) {
+      const ratio =
+        (distance - prev.distance) / (curr.distance - prev.distance);
+      return prev.temp + ratio * (curr.temp - prev.temp);
+    }
+  }
+  const last = SOLAR_SYSTEM_TEMPERATURES[SOLAR_SYSTEM_TEMPERATURES.length - 1];
+  const prev = SOLAR_SYSTEM_TEMPERATURES[SOLAR_SYSTEM_TEMPERATURES.length - 2];
+  const ratio = (distance - last.distance) / (last.distance - prev.distance);
+  return Math.max(0, last.temp + ratio * (last.temp - prev.temp));
+}
+
+export function adjustPlanetType(type, temperature) {
+  if (type === 'ice' && temperature > 320) {
+    return 'water';
+  }
+  return type;
+}
+
 export class StellarObject {
   constructor(props) {
     Object.assign(this, props);
@@ -24,6 +60,7 @@ export function generateStellarObject(
   siblings = []
 ) {
   if (kind === 'base') {
+    if (parent.temperature > 400) return null;
     const orbitDistance = (orbitIndex + 1) * randomRange(0.001, 0.01);
     const distance = parent.distance + orbitDistance;
     const angle = Math.random() * Math.PI * 2;
@@ -94,9 +131,10 @@ export function generateStellarObject(
   }
 
   const baseTemperature =
-    278 * Math.pow(star.luminosity, 0.25) / Math.sqrt(distance);
+    interpolateSolarTemperature(distance) * Math.pow(star.luminosity, 0.25);
   const parentInfluence = parent ? (parent.gravity / step) * 10 : 0;
   const temperature = baseTemperature + parentInfluence;
+  type = adjustPlanetType(type, temperature);
   const temperatureSpan = 50 / distance + parentInfluence * 0.1;
   const mass = Math.pow(radius, 3);
   let gravity;
@@ -180,8 +218,9 @@ function generateChildren(star, body) {
   for (let i = 0; i < count; i++) {
     moons.push(generateStellarObject('moon', star, i, body, moons));
   }
-  if (body.features?.includes('base')) {
-    moons.push(generateStellarObject('base', star, moons.length, body, moons));
+  if (body.features?.includes('base') && body.temperature <= 400) {
+    const base = generateStellarObject('base', star, moons.length, body, moons);
+    if (base) moons.push(base);
   }
   return moons;
 }
