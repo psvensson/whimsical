@@ -39,7 +39,13 @@ function interpolateSolarTemperature(distance) {
 }
 
 export function adjustPlanetType(type, temperature) {
-  if (type === 'ice' && temperature > 320) {
+  if (
+    temperature > 373 &&
+    (type === 'ice' || type === 'water')
+  ) {
+    return 'gas';
+  }
+  if (type === 'ice' && temperature > 273) {
     return 'water';
   }
   return type;
@@ -122,7 +128,7 @@ export function generateStellarObject(
   radius = Math.min(Math.max(radius, minR), maxR);
 
   let type = rule.name;
-  if (type === 'gas giant' && radius <= 4) {
+  if (type === 'gas' && radius <= 4) {
     type = 'ice';
   }
   if (radius < 0.3) {
@@ -131,7 +137,9 @@ export function generateStellarObject(
   }
 
   const baseTemperature =
-    interpolateSolarTemperature(distance) * Math.pow(star.luminosity, 0.25);
+    interpolateSolarTemperature(distance) *
+    Math.pow(star.luminosity, 0.25) *
+    (star.temperatureModifier || 1);
   const parentInfluence = parent ? (parent.gravity / step) * 10 : 0;
   const temperature = baseTemperature + parentInfluence;
   type = adjustPlanetType(type, temperature);
@@ -251,7 +259,7 @@ function selectRule(star, distance, prev) {
   });
   if (
     prev &&
-    prev.type === 'gas giant' &&
+    prev.type === 'gas' &&
     prev.radius > 6 &&
     Math.abs(distance - prev.distance) < 1
   ) {

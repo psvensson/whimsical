@@ -174,9 +174,14 @@ test('planet temperature span decreases with distance from star', () => {
   }
 });
 
-test('ice worlds above 320K become water type', () => {
-  assert.equal(adjustPlanetType('ice', 321), 'water');
-  assert.equal(adjustPlanetType('ice', 300), 'ice');
+test('ice and water transform based on temperature', () => {
+  // ice above 0°C becomes water
+  assert.equal(adjustPlanetType('ice', 274), 'water');
+  // ice or water above 100°C becomes gas
+  assert.equal(adjustPlanetType('ice', 374), 'gas');
+  assert.equal(adjustPlanetType('water', 400), 'gas');
+  // ice below freezing stays ice
+  assert.equal(adjustPlanetType('ice', 260), 'ice');
 });
 
 test('bases cannot orbit extremely hot objects', () => {

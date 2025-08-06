@@ -19,7 +19,8 @@ export class Star extends StellarObject {
       luminosity: randomRange(type.luminosity[0], type.luminosity[1]),
       radius,
       gravity: randomRange(minGravity, maxGravity),
-      habitableZone: type.habitableZone
+      habitableZone: type.habitableZone,
+      temperatureModifier: type.temperatureModifier
     });
     this.planets = [];
     const planetCount = randomInt(0, 10);
