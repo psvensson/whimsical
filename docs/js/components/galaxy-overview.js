@@ -19,7 +19,7 @@ export function createGalaxyOverview(
   function countHabitable(bodies) {
     return bodies.reduce((acc, body) => {
       let total = acc;
-      if (body.isHabitable) total++;
+      if (body.isHabitable && body.kind !== 'base') total++;
       if (body.moons?.length) {
         total += countHabitable(body.moons);
       }
