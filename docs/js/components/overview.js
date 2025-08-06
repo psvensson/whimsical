@@ -68,10 +68,10 @@ export function createOverview({ update, draw, label, showTime = true } = {}) {
     display.className = 'time-display';
 
     const playBtn = document.createElement('button');
-    playBtn.textContent = 'Play';
+    playBtn.textContent = '▶';
 
     const pauseBtn = document.createElement('button');
-    pauseBtn.textContent = 'Pause';
+    pauseBtn.textContent = '⏸';
 
     function updateDisplay(months) {
       const year = Math.floor(months / 12);
@@ -103,11 +103,18 @@ export function createOverview({ update, draw, label, showTime = true } = {}) {
 
   requestAnimationFrame(resize);
 
+  const renderInterval = setInterval(() => {
+    if (typeof update === 'function') update(zoom);
+    if (typeof draw === 'function') draw(zoom);
+  }, 50);
+  if (renderInterval.unref) renderInterval.unref();
+
   let destroyed = false;
   function destroy() {
     if (destroyed) return;
     destroyed = true;
     resizeObserver.disconnect();
+    clearInterval(renderInterval);
     if (unsubscribeTime) unsubscribeTime();
   }
 
