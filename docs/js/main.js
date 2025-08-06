@@ -8,7 +8,7 @@ import { createPlanetOverview } from './components/planet-overview.js';
 import { createBaseSidebar } from './components/base-sidebar.js';
 import { generateGalaxy } from './galaxy.js';
 
-function init() {
+export function init() {
   const app = document.getElementById('app');
 
   const header = createHeader('Guest', 'Explorer');
