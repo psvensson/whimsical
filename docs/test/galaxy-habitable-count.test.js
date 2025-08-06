@@ -45,7 +45,10 @@ const ctxStub = {
 
 test('displays habitable world count', async () => {
   setupDom();
-  const star = { name: 'TestStar', color: '#fff', planets: [{ isHabitable: true, moons: [] }] };
+  const habitableMoon = { isHabitable: true, kind: 'moon', moons: [] };
+  const base = { isHabitable: true, kind: 'base', moons: [] };
+  const planet = { isHabitable: true, kind: 'planet', moons: [habitableMoon, base] };
+  const star = { name: 'TestStar', color: '#fff', planets: [planet] };
   const galaxy = { size: 1, systems: [{ x: 0, y: 0, system: { stars: [star] } }] };
 
   const overview = createGalaxyOverview(galaxy);
@@ -54,7 +57,7 @@ test('displays habitable world count', async () => {
   await new Promise((r) => setTimeout(r, 0));
 
   const countEl = overview.querySelector('.habitable-count');
-  assert.equal(countEl.textContent, 'Habitable Worlds: 1');
+  assert.equal(countEl.textContent, 'Habitable Worlds: 2');
 
   delete global.window;
   delete global.document;
