@@ -1,6 +1,6 @@
 import { PLANET_COLORS } from '../data/planets.js';
 import { createOverview } from './overview.js';
-import { getTime } from '../time.js';
+import { getMoonTime } from '../time.js';
 
 export function createPlanetOverview(
   planet,
@@ -32,7 +32,7 @@ export function createPlanetOverview(
       0.1
     );
     const scale = scaleBase * zoom;
-    const timeYears = getTime() / 12;
+    const timeYears = getMoonTime() / 12;
     objectData = objects.map((obj) => {
       const dist = obj.orbitDistance || obj.distance - planet.distance;
       const orbitA = Math.max(dist * scale, 0);

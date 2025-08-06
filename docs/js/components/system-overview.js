@@ -1,6 +1,6 @@
 import { PLANET_COLORS } from '../data/planets.js';
 import { createOverview } from './overview.js';
-import { getTime } from '../time.js';
+import { getPlanetTime } from '../time.js';
 
 export function createSystemOverview(
   system,
@@ -47,7 +47,7 @@ export function createSystemOverview(
     const scale = scaleBase * zoom;
 
     starRadius = Math.max(baseStarRadius * zoom, 0);
-    const timeYears = getTime() / 12;
+    const timeYears = getPlanetTime() / 12;
     planetData = planets.map((planet) => {
       const dist = planet.orbitDistance || planet.distance || 0;
       const orbitA = Math.max(dist * scale, 0);
