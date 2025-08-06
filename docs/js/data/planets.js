@@ -54,27 +54,25 @@ export const PLANET_COLORS = {
   gas: '#f1c40f'
 };
 
-export const PLANET_FEATURES = [
-  { name: 'base', chance: 0.1, category: 'orbital' },
-  { name: 'shipyard', chance: 0.1, category: 'orbital' },
-  {
-    name: 'orbitalMine',
+export const PLANET_FEATURES = [  
+  { name: 'Mine', chance: 0.1, category: 'surface' },
+  { name: 'Spaceport', chance: 0.1, category: 'surface' },
+  { name: 'Manufactory', chance: 0.1, category: 'surface' },
+  { name: 'Research Facility', chance: 0.1, category: 'surface' }
+];
+
+export const ORBITAL_FACILITIES = [
+  { name: 'Shipyard', chance: 0.1, category: 'orbital' }, 
+  { name: 'Base', chance: 0.1, category: 'orbital' },  {
+    name: 'Orbital Mine',
     chance: 0.1,
     category: 'orbital',
     condition: (body) => body.type === 'gas'
   },
-  { name: 'orbitalManufactory', chance: 0.1, category: 'orbital' },
-  { name: 'orbitalResearch', chance: 0.1, category: 'orbital' },
-  { name: 'jumpStation', chance: 0.1, category: 'orbital' },
-  { name: 'mine', chance: 0.1, category: 'surface' },
-  { name: 'spaceport', chance: 0.1, category: 'surface' },
-  { name: 'manufactory', chance: 0.1, category: 'surface' },
-  { name: 'research', chance: 0.1, category: 'surface' }
-];
-
-export const ORBITAL_FACILITIES = PLANET_FEATURES.filter(
-  (f) => f.category === 'orbital'
-).map((f) => f.name);
+  { name: 'Orbital Manufactory', chance: 0.1, category: 'orbital' },
+  { name: 'Orbital Research Facility', chance: 0.1, category: 'orbital' },
+  { name: 'Jump Station', chance: 0.1, category: 'orbital' },
+]
 
 export const SURFACE_FACILITIES = PLANET_FEATURES.filter(
   (f) => f.category === 'surface'
