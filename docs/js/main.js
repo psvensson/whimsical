@@ -32,7 +32,7 @@ export function init() {
     if (overview) {
       main.replaceChild(galaxyOverview, overview);
     } else {
-      main.append(galaxyOverview);
+      main.insertBefore(galaxyOverview, sidebar);
     }
     overview = galaxyOverview;
 
@@ -63,11 +63,11 @@ export function init() {
     );
     main.replaceChild(systemView, overview);
     overview = systemView;
+    const starContent = createStarSidebar(system);
+    setSidebarContent(sidebar, starContent);
     if (selectedPlanet) {
       const planetContent = createPlanetSidebar(selectedPlanet);
       setSidebarContent(sidebar, planetContent);
-    } else {
-      clearSidebar(sidebar);
     }
   }
 
@@ -97,7 +97,7 @@ export function init() {
   app.append(header, main);
 
   setTimeout(() => {
-    galaxy = generateGalaxy(100);
+    galaxy = generateGalaxy(105);
     showGalaxy();
   }, 0);
 }
