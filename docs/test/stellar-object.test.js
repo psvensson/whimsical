@@ -10,7 +10,11 @@ import {
   MOON_RULES,
   PLANET_FEATURES
 } from '../js/data/planets.js';
-import { ATMOSPHERE_GRAVITY_THRESHOLD } from '../js/stellar-object.js';
+import {
+  ATMOSPHERE_GRAVITY_THRESHOLD,
+  generateStellarObject,
+  adjustPlanetType
+} from '../js/stellar-object.js';
 
 const planetTypeNames = PLANET_TYPES.map((t) => t.name);
 const featureNames = PLANET_FEATURES.map((f) => f.name);
@@ -168,4 +172,21 @@ test('planet temperature span decreases with distance from star', () => {
   for (let i = 1; i < sorted.length; i++) {
     assert.ok(sorted[i].temperatureSpan <= sorted[i - 1].temperatureSpan);
   }
+});
+
+test('ice worlds above 320K become water type', () => {
+  assert.equal(adjustPlanetType('ice', 321), 'water');
+  assert.equal(adjustPlanetType('ice', 300), 'ice');
+});
+
+test('bases cannot orbit extremely hot objects', () => {
+  const star = { mass: 1, luminosity: 1 };
+  const parent = {
+    distance: 1,
+    gravity: 1,
+    temperature: 401,
+    temperatureSpan: 0
+  };
+  const base = generateStellarObject('base', star, 0, parent, []);
+  assert.equal(base, null);
 });
