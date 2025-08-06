@@ -14,8 +14,8 @@ export function createSystemOverview(
 ) {
   const star = system.stars[0];
   const planets = system.planets;
-  const STAR_SCALE = 6;
-  const PLANET_RADIUS = 8; // constant radius for all planets
+  const STAR_SCALE = 3;
+  const PLANET_RADIUS = 4; // constant radius for all planets
   const ICON_SIZE = 4;
   const BASE_ICON_SIZE = 8 / 6;
   const MOON_ICON_RADIUS = 2;

@@ -33,15 +33,10 @@ function validateBody(body, star, parent = null) {
   if (ORBITAL_FACILITIES.includes(body.type)) {
     assert.ok(body.distance > 0);
     assert.ok(typeof body.radius === 'number');
-    assert.ok(typeof body.gravity === 'number');
-    assert.ok(typeof body.atmosphericPressure === 'number');
-    assert.ok(typeof body.temperatureSpan === 'number');
-    assert.equal(body.atmosphericPressure, 0);
-    if (parent) {
-      assert.equal(body.gravity, parent.gravity);
-      assert.equal(body.temperature, parent.temperature);
-      assert.equal(body.temperatureSpan, parent.temperatureSpan);
-    }
+    assert.equal(body.gravity, 0);
+    assert.equal(body.atmosphericPressure, 1);
+    assert.equal(body.temperatureSpan, 0);
+    assert.equal(body.temperature, 293);
     return;
   }
   assert.ok(typeof body.gravity === 'number');
