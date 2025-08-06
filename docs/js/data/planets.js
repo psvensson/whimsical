@@ -37,7 +37,7 @@ export const PLANET_TYPES = [
     radius: [0.5, 3]
   },
   {
-    name: 'gas giant',
+    name: 'gas',
     bias: 'outer',
     maxDistance: () => Infinity,
     radius: [4, 12]
@@ -51,7 +51,7 @@ export const PLANET_COLORS = {
   terrestrial: '#2ecc71',
   ice: '#87cefa',
   water: '#1e90ff',
-  'gas giant': '#f1c40f'
+  gas: '#f1c40f'
 };
 
 export const PLANET_FEATURES = [
@@ -75,7 +75,7 @@ export const PLANET_RESOURCES = {
   ],
   ice: ['water', 'methane', 'ammonia', 'nitrogen'],
   water: ['water', 'methane', 'ammonia', 'nitrogen'],
-  'gas giant': ['hydrogen', 'helium', 'methane', 'ammonia']
+  gas: ['hydrogen', 'helium', 'methane', 'ammonia']
 };
 
 export const PLANET_ATMOSPHERES = {
@@ -85,7 +85,7 @@ export const PLANET_ATMOSPHERES = {
   terrestrial: ['nitrogen', 'oxygen', 'argon'],
   ice: ['nitrogen', 'methane'],
   water: ['nitrogen', 'oxygen', 'water vapor'],
-  'gas giant': ['hydrogen', 'helium', 'methane', 'ammonia']
+  gas: ['hydrogen', 'helium', 'methane', 'ammonia']
 };
 
 // Rules for determining the maximum number of moons based on planet size
