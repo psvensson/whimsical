@@ -7,12 +7,18 @@
 //     can resolve the module without bundling or import maps.
 //   - In Node.js we fall back to the UMD build, which can be loaded in a CommonJS
 //     context.  When imported via ESM it exposes its contents on the `default`
-//     export.
+//     export.  The tests run under Node with JSDOM, which defines `window`, so
+//     Node detection is performed using `process.versions` instead of checking
+//     for `window`.
 //
 // Top‑level `await` is used so that by the time this module's exports are
 // consumed the dictionary is already available.
 let uniqueNamesGenerator, adjectives, animals;
-if (typeof window === 'undefined') {
+const isNode =
+  typeof process !== 'undefined' &&
+  process.versions != null &&
+  process.versions.node != null;
+if (isNode) {
   ({ default: { uniqueNamesGenerator, adjectives, animals } } =
     await import(
       '../node_modules/unique-names-generator/dist/index.umd.js'
