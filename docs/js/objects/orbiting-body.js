@@ -101,10 +101,10 @@ export class OrbitingBody extends StellarObject {
     const inHZ =
       distance >= star.habitableZone[0] &&
       distance <= star.habitableZone[1];
-    const gravityOk = gravity >= 0.5 && gravity <= 1.5;
-    const tempOk = temperature >= 260 && temperature <= 320;
+    const gravityOk = gravity >= 0.4 && gravity <= 1.6;
+    const tempOk = temperature >= 250 && temperature <= 320;
     const pressureOk =
-      atmosphericPressure >= 0.5 && atmosphericPressure <= 2;
+      atmosphericPressure >= 0.4 && atmosphericPressure <= 2.3;
     const isHabitable =
       ['terrestrial', 'water'].includes(type) &&
       inHZ &&

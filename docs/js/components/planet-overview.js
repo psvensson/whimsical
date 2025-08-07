@@ -10,7 +10,7 @@ export function createPlanetOverview(
   height = 400
 ) {
   const objects = planet.moons || [];
-  const PLANET_RADIUS = 16; // constant radius for planet
+  const PLANET_RADIUS = 20; // constant radius for planet
   const OBJECT_RADIUS = 6; // constant radius for moons and bases
 
   let planetRadius = PLANET_RADIUS;
