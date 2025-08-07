@@ -8,6 +8,9 @@ import { createPlanetOverview } from './components/planet-overview.js';
 import { createBaseSidebar } from './components/base-sidebar.js';
 import { generateGalaxy } from './galaxy.js';
 
+const GALAXY_SEED = 105;
+const INITIAL_GENERATION_DELAY_MS = 0;
+
 export function init() {
   const app = document.getElementById('app');
 
@@ -100,9 +103,9 @@ export function init() {
   app.append(header, main);
 
   setTimeout(() => {
-    galaxy = generateGalaxy(105);
+    galaxy = generateGalaxy(GALAXY_SEED);
     showGalaxy();
-  }, 0);
+  }, INITIAL_GENERATION_DELAY_MS);
 }
 // Ensure init runs even if DOMContentLoaded has already fired
 if (document.readyState === 'loading') {

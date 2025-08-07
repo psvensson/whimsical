@@ -2,13 +2,17 @@ import { OrbitingBody } from './orbiting-body.js';
 import { randomInt, randomRange, EARTH_MASS_IN_SOLAR } from './util.js';
 import { MOON_RULES } from '../data/planets.js';
 import { ORBITAL_FACILITY_CLASSES } from '../facilities/index.js';
+import { MAX_PARENT_TEMPERATURE } from '../facilities/facility.js';
+
+const MOON_GRAVITY_RATIO = 0.1;
+const MOON_MIN_GRAVITY_FACTOR = 0.5;
 
 export class Moon extends OrbitingBody {
   static kind = 'moon';
 
   static calculateGravity(parent) {
-    const maxGravity = parent.gravity * 0.1;
-    const minGravity = maxGravity * 0.5;
+    const maxGravity = parent.gravity * MOON_GRAVITY_RATIO;
+    const minGravity = maxGravity * MOON_MIN_GRAVITY_FACTOR;
     return randomRange(minGravity, maxGravity);
   }
 
@@ -37,7 +41,7 @@ export function generateMoons(star, body) {
   for (let i = 0; i < count; i++) {
     moons.push(Moon.generate(star, i, body, moons));
   }
-  if (body.features && body.temperature <= 400) {
+  if (body.features && body.temperature <= MAX_PARENT_TEMPERATURE) {
     for (const feature of body.features) {
       const Facility = ORBITAL_FACILITY_CLASSES[feature];
       if (Facility) {

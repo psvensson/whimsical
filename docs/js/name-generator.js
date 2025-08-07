@@ -18,6 +18,7 @@ const isNode =
   typeof process !== 'undefined' &&
   process.versions != null &&
   process.versions.node != null;
+const UNIQUE_NAME_CHANCE = 0.3;
 if (isNode) {
   ({ default: { uniqueNamesGenerator, adjectives, animals } } =
     await import(
@@ -66,7 +67,7 @@ export function toRoman(num) {
 export function generateBodyName(starName, orbitIndex, parent = null) {
   if (!parent) {
     // planet naming: 70% star name + numeral, 30% unique
-    if (Math.random() < 0.3) {
+    if (Math.random() < UNIQUE_NAME_CHANCE) {
       return generateUniqueName();
     }
     return `${starName} ${toRoman(orbitIndex + 1)}`;
@@ -75,7 +76,7 @@ export function generateBodyName(starName, orbitIndex, parent = null) {
   const planetHasOwnName = !parent.name.startsWith(`${starName} `);
   if (planetHasOwnName) {
     // moon around a uniquely named planet: 70% planet name + numeral
-    if (Math.random() < 0.3) {
+    if (Math.random() < UNIQUE_NAME_CHANCE) {
       return generateUniqueName();
     }
     return `${parent.name} ${toRoman(orbitIndex + 1)}`;
