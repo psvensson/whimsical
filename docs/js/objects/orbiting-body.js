@@ -104,7 +104,7 @@ export class OrbitingBody extends StellarObject {
     const gravityOk = gravity >= 0.4 && gravity <= 1.6;
     const tempOk = temperature >= 250 && temperature <= 320;
     const pressureOk =
-      atmosphericPressure >= 0.4 && atmosphericPressure <= 2.3;
+      atmosphericPressure >= 0.4 && atmosphericPressure <= 30;
     const isHabitable =
       ['terrestrial', 'water'].includes(type) &&
       inHZ &&
