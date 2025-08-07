@@ -4,6 +4,7 @@ import {
   pause,
   isPlaying,
   getTime,
+  MONTHS_PER_YEAR
 } from '../time.js';
 
 export function createHeader(userName, playerName) {
@@ -34,8 +35,8 @@ export function createHeader(userName, playerName) {
   pauseBtn.textContent = '⏸';
 
   function updateDisplay(months) {
-    const year = Math.floor(months / 12);
-    const month = months % 12;
+    const year = Math.floor(months / MONTHS_PER_YEAR);
+    const month = months % MONTHS_PER_YEAR;
     display.textContent = `${year}:${month}`;
     playBtn.disabled = isPlaying();
     pauseBtn.disabled = !isPlaying();

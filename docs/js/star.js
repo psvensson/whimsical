@@ -2,6 +2,9 @@ import { STAR_TYPES, STAR_CLASS_COLORS } from './data/stars.js';
 import { generateStellarObject, randomInt, randomRange, StellarObject } from './stellar-object.js';
 import { generateUniqueName } from './name-generator.js';
 
+const MIN_PLANETS_PER_STAR = 0;
+const MAX_PLANETS_PER_STAR = 10;
+
 export class Star extends StellarObject {
   constructor() {
     const type = STAR_TYPES[randomInt(0, STAR_TYPES.length - 1)];
@@ -23,7 +26,7 @@ export class Star extends StellarObject {
       temperatureModifier: type.temperatureModifier
     });
     this.planets = [];
-    const planetCount = randomInt(0, 10);
+    const planetCount = randomInt(MIN_PLANETS_PER_STAR, MAX_PLANETS_PER_STAR);
     for (let i = 0; i < planetCount; i++) {
       this.planets.push(
         generateStellarObject('planet', this, i, null, this.planets)
