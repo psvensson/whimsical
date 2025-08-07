@@ -1,5 +1,5 @@
 import { createOverview } from './overview.js';
-import { ORBITAL_FACILITIES } from '../data/planets.js';
+import { countHabitableWorlds } from '../utils/habitable-worlds.js';
 
 export function createGalaxyOverview(
   galaxy,
@@ -17,25 +17,7 @@ export function createGalaxyOverview(
     system,
   }));
 
-  function countHabitable(bodies) {
-    return bodies.reduce((acc, body) => {
-      let total = acc;
-      if (body.isHabitable && !ORBITAL_FACILITIES.includes(body.kind)) total++;
-      if (body.moons?.length) {
-        total += countHabitable(body.moons);
-      }
-      return total;
-    }, 0);
-  }
-
-  const habitableWorldCount = galaxy.systems.reduce((count, { system }) => {
-    return (
-      count +
-      system.stars.reduce((starCount, star) => {
-        return starCount + countHabitable(star.planets || []);
-      }, 0)
-    );
-  }, 0);
+  const habitableWorldCount = countHabitableWorlds(galaxy);
 
   let starPositions = [];
   let hoveredIndex = null;
