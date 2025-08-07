@@ -27,18 +27,18 @@ export {
 };
 
 export const ORBITAL_FACILITY_CLASSES = {
-  base: Base,
-  shipyard: Shipyard,
-  orbitalMine: OrbitalMine,
-  orbitalManufactory: OrbitalManufactory,
-  orbitalResearch: OrbitalResearch,
-  jumpStation: JumpStation
+  Base,
+  Shipyard,
+  'Orbital Mine': OrbitalMine,
+  'Orbital Manufactory': OrbitalManufactory,
+  'Orbital Research Facility': OrbitalResearch,
+  'Jump Station': JumpStation,
 };
 
 export const SURFACE_FACILITY_CLASSES = {
-  mine: Mine,
-  spaceport: Spaceport,
-  manufactory: Manufactory,
-  research: Research
+  Mine,
+  Spaceport,
+  Manufactory,
+  'Research Facility': Research,
 };
 

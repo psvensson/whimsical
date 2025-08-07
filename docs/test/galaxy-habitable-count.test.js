@@ -46,8 +46,8 @@ const ctxStub = {
 test('displays habitable world count', async () => {
   setupDom();
   const habitableMoon = { isHabitable: true, kind: 'moon', moons: [] };
-  const base = { isHabitable: true, kind: 'base', moons: [] };
-  const shipyard = { isHabitable: true, kind: 'shipyard', moons: [] };
+  const base = { isHabitable: true, kind: 'Base', moons: [] };
+  const shipyard = { isHabitable: true, kind: 'Shipyard', moons: [] };
   const planet = {
     isHabitable: true,
     kind: 'planet',
