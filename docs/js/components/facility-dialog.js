@@ -44,7 +44,7 @@ function create(obj, name, facilityName) {
   if (!SURFACE_FACILITY_CLASSES[name]) return;
   if (obj.type === 'gas') return;
   obj.features = obj.features || [];
-  obj.features.push({ kind: name, name: facilityName });
+  obj.features.push({ kind: name, name: facilityName, storage: [], features: [] });
 }
 
 export function createFacilityDialog(obj, onCreate = null) {

@@ -1,4 +1,5 @@
 import { Facility, OrbitalFacility, SurfaceFacility } from './facility.js';
+import { Storage } from './storage.js';
 import { Base } from './orbital/base.js';
 import { Shipyard } from './orbital/shipyard.js';
 import { OrbitalMine } from './orbital/orbital-mine.js';
@@ -14,6 +15,7 @@ export {
   Facility,
   OrbitalFacility,
   SurfaceFacility,
+  Storage,
   Base,
   Shipyard,
   OrbitalMine,

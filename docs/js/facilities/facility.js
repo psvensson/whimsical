@@ -13,7 +13,13 @@ const FACILITY_ATMOSPHERIC_PRESSURE = 1;
 const POPULATION_MIN = 100;
 const POPULATION_MAX = 1000;
 
-export class Facility extends StellarObject {}
+export class Facility extends StellarObject {
+  constructor(props = {}) {
+    super(props);
+    this.storage = props.storage || [];
+    this.features = props.features || [];
+  }
+}
 
 export class OrbitalFacility extends Facility {
   static generate(star, orbitIndex, parent) {
@@ -44,6 +50,7 @@ export class OrbitalFacility extends Facility {
       isHabitable: true,
       orbitalPeriod,
       features: [],
+      storage: [],
       angle,
       eccentricity,
       orbitRotation,
