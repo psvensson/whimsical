@@ -1,3 +1,5 @@
+import { createFacilityDialog } from './facility-dialog.js';
+
 export function createPlanetSidebar(planet) {
   const container = document.createElement('div');
   container.className = 'planet-sidebar';
@@ -51,6 +53,18 @@ export function createPlanetSidebar(planet) {
     <h3>Orbiting Objects</h3>
     ${moonsTable}
   `;
+  const btn = document.createElement('button');
+  btn.className = 'create-facilities';
+  btn.textContent = 'Create Facilities';
+  btn.addEventListener('click', () => {
+    const dialog = createFacilityDialog(planet, () => {
+      const updated = createPlanetSidebar(planet);
+      container.replaceWith(updated);
+    });
+    document.body.appendChild(dialog);
+    dialog.showModal?.();
+  });
+  container.appendChild(btn);
   return container;
 }
 
