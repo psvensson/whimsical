@@ -115,6 +115,7 @@ export const PLANET_PRESSURES = {
 
 // Rules for determining the maximum number of moons based on planet size
 export const MOON_RULES = [
+  { minRadius: 5, maxMoons: 10 },
   { minRadius: 3, maxMoons: 5 },
   { minRadius: 1, maxMoons: 3 },
   { minRadius: 0, maxMoons: 1 }
