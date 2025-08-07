@@ -32,17 +32,9 @@ function showToast(message) {
 }
 
 function create(obj, name) {
-  if (SURFACE_FACILITY_CLASSES[name]) {
-    obj.features = obj.features || [];
-    obj.features.push(name);
-    return;
-  }
-  if (ORBITAL_FACILITY_CLASSES[name]) {
-    const Facility = ORBITAL_FACILITY_CLASSES[name];
-    const facility = Facility.generate(null, (obj.moons || []).length, obj);
-    if (!obj.moons) obj.moons = [];
-    if (facility) obj.moons.push(facility);
-  }
+  if (!SURFACE_FACILITY_CLASSES[name]) return;
+  obj.features = obj.features || [];
+  obj.features.push(name);
 }
 
 export function createFacilityDialog(obj, onCreate = null) {
@@ -71,8 +63,19 @@ export function createFacilityDialog(obj, onCreate = null) {
       btn.title = reason;
     }
     btn.addEventListener('click', () => {
-      create(obj, name);
-      showToast(`${name} created`);
+      if (ORBITAL_FACILITY_CLASSES[name]) {
+        const Facility = ORBITAL_FACILITY_CLASSES[name];
+        const facility = Facility.generate(null, (obj.moons || []).length, obj);
+        if (!facility) return;
+        const input = window.prompt('Facility name', facility.name);
+        facility.name = input?.trim() || facility.name;
+        if (!obj.moons) obj.moons = [];
+        obj.moons.push(facility);
+        showToast(`${facility.name} created`);
+      } else {
+        create(obj, name);
+        showToast(`${name} created`);
+      }
       onCreate?.();
       dialog.close?.();
       dialog.remove();

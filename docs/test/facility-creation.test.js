@@ -65,16 +65,20 @@ test('facility creation respects prerequisites', () => {
   sidebar = document.querySelector('.planet-sidebar');
   sidebar.querySelector('.create-facilities').click();
   baseBtn = getButton('Base');
+  global.window.prompt = () => 'My Base';
   assert.equal(baseBtn.disabled, false);
   baseBtn.click();
   assert.ok(planet.moons.some((m) => m.kind === 'Base'));
+  assert.ok(planet.moons.some((m) => m.name === 'My Base'));
 
   sidebar = document.querySelector('.planet-sidebar');
   sidebar.querySelector('.create-facilities').click();
   shipyardBtn = getButton('Shipyard');
+  global.window.prompt = () => 'My Shipyard';
   assert.equal(shipyardBtn.disabled, false);
   shipyardBtn.click();
   assert.ok(planet.moons.some((m) => m.kind === 'Shipyard'));
+  assert.ok(planet.moons.some((m) => m.name === 'My Shipyard'));
 
   delete global.window;
   delete global.document;
