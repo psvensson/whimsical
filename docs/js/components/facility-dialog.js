@@ -11,12 +11,24 @@ function hasFacility(obj, name) {
 }
 
 function canCreate(obj, name) {
-  if (name === 'Spaceport') return true;
-  if (name === 'Base') return (obj.features || []).includes('Spaceport');
-  if (ORBITAL_FACILITY_CLASSES[name]) {
-    return (obj.moons || []).some((m) => m.kind === 'Base');
+  if (name === 'Spaceport') return { allowed: true, reason: '' };
+  if (name === 'Base') {
+    const ok = (obj.features || []).includes('Spaceport');
+    return { allowed: ok, reason: 'Requires Spaceport' };
   }
-  return true;
+  if (ORBITAL_FACILITY_CLASSES[name]) {
+    const ok = (obj.moons || []).some((m) => m.kind === 'Base');
+    return { allowed: ok, reason: 'Requires Base in orbit' };
+  }
+  return { allowed: true, reason: '' };
+}
+
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  toast.addEventListener('animationend', () => toast.remove());
 }
 
 function create(obj, name) {
@@ -35,6 +47,7 @@ function create(obj, name) {
 
 export function createFacilityDialog(obj, onCreate = null) {
   const dialog = document.createElement('dialog');
+  dialog.className = 'facility-dialog';
   const table = document.createElement('table');
   const tbody = document.createElement('tbody');
 
@@ -51,10 +64,15 @@ export function createFacilityDialog(obj, onCreate = null) {
     const actionCell = document.createElement('td');
     const btn = document.createElement('button');
     btn.textContent = 'Create';
-    const allowed = canCreate(obj, name);
-    if (!allowed) btn.disabled = true;
+    const { allowed, reason } = canCreate(obj, name);
+    if (!allowed) {
+      btn.disabled = true;
+      row.title = reason;
+      btn.title = reason;
+    }
     btn.addEventListener('click', () => {
       create(obj, name);
+      showToast(`${name} created`);
       onCreate?.();
       dialog.close?.();
       dialog.remove();
