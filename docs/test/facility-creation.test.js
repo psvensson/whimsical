@@ -44,10 +44,18 @@ test('facility creation respects prerequisites', () => {
     return row?.querySelector('button');
   };
 
+  const getRow = (name) => {
+    const dlg = document.querySelector('dialog');
+    const rows = [...dlg.querySelectorAll('tr')];
+    return rows.find((r) => r.children[0].textContent === name);
+  };
+
   sidebar.querySelector('.create-facilities').click();
   let spaceportBtn = getButton('Spaceport');
   let baseBtn = getButton('Base');
   let shipyardBtn = getButton('Shipyard');
+  assert.equal(getRow('Base').getAttribute('title'), 'Requires Spaceport');
+  assert.equal(getRow('Shipyard').getAttribute('title'), 'Requires Base in orbit');
   assert.equal(spaceportBtn.disabled, false);
   assert.equal(baseBtn.disabled, true);
   assert.equal(shipyardBtn.disabled, true);
