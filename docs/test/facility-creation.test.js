@@ -59,8 +59,13 @@ test('facility creation respects prerequisites', () => {
   assert.equal(spaceportBtn.disabled, false);
   assert.equal(baseBtn.disabled, true);
   assert.equal(shipyardBtn.disabled, true);
+  global.window.prompt = () => 'My Port';
   spaceportBtn.click();
-  assert.ok(planet.features.includes('Spaceport'));
+  assert.ok(
+    planet.features.some(
+      (f) => typeof f !== 'string' && f.kind === 'Spaceport' && f.name === 'My Port'
+    )
+  );
 
   sidebar = document.querySelector('.planet-sidebar');
   sidebar.querySelector('.create-facilities').click();
@@ -79,6 +84,30 @@ test('facility creation respects prerequisites', () => {
   shipyardBtn.click();
   assert.ok(planet.moons.some((m) => m.kind === 'Shipyard'));
   assert.ok(planet.moons.some((m) => m.name === 'My Shipyard'));
+
+  delete global.window;
+  delete global.document;
+});
+
+test('cannot create surface facilities on gas objects', () => {
+  const dom = new JSDOM('<!doctype html><html><body></body></html>');
+  global.window = dom.window;
+  global.document = dom.window.document;
+
+  const planet = { ...planetTemplate, type: 'gas' };
+  const sidebar = createPlanetSidebar(planet);
+  document.body.append(sidebar);
+  sidebar.querySelector('.create-facilities').click();
+
+  const getButton = (name) => {
+    const dlg = document.querySelector('dialog');
+    const rows = [...dlg.querySelectorAll('tr')];
+    const row = rows.find((r) => r.children[0].textContent === name);
+    return row?.querySelector('button');
+  };
+
+  const mineBtn = getButton('Mine');
+  assert.equal(mineBtn.disabled, true);
 
   delete global.window;
   delete global.document;

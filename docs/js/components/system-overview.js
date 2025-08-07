@@ -177,7 +177,8 @@ export function createSystemOverview(
       const iconY = py;
       if (planet.features) {
         planet.features.forEach((f) => {
-          const size = drawFeatureIcon(ctx, f, iconX, iconY);
+          const kind = typeof f === 'string' ? f : f.kind;
+          const size = drawFeatureIcon(ctx, kind, iconX, iconY);
           iconX += size + 4;
         });
       }

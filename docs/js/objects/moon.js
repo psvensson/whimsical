@@ -43,7 +43,8 @@ export function generateMoons(star, body) {
   }
   if (body.features && body.temperature <= MAX_PARENT_TEMPERATURE) {
     for (const feature of body.features) {
-      const Facility = ORBITAL_FACILITY_CLASSES[feature];
+      const name = typeof feature === 'string' ? feature : feature.kind;
+      const Facility = ORBITAL_FACILITY_CLASSES[name];
       if (Facility) {
         const facility = Facility.generate(star, moons.length, body);
         if (facility) moons.push(facility);
