@@ -4,9 +4,13 @@ export function createPlanetSidebar(planet) {
   const container = document.createElement('div');
   container.className = 'planet-sidebar';
   const labelText = planet.kind === 'moon' ? 'Moon' : 'Planet';
-  const surfaceObjects = (planet.features || []).filter((f) => f !== 'base');
+  const surfaceObjects = (planet.features || []).filter((f) =>
+    typeof f === 'string' ? f !== 'base' : f.kind !== 'base'
+  );
   const surfaceContent = surfaceObjects.length
-    ? `<ul>${surfaceObjects.map((s) => `<li>${s}</li>`).join('')}</ul>`
+    ? `<ul>${surfaceObjects
+        .map((s) => `<li>${typeof s === 'string' ? s : s.name}</li>`)
+        .join('')}</ul>`
     : '<p>None</p>';
   const resourceEntries = Object.entries(planet.resources || {});
   const resourcesTable = resourceEntries.length

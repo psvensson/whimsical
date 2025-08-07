@@ -2,7 +2,9 @@ import { ORBITAL_FACILITY_CLASSES, SURFACE_FACILITY_CLASSES } from '../facilitie
 
 function hasFacility(obj, name) {
   if (SURFACE_FACILITY_CLASSES[name]) {
-    return (obj.features || []).includes(name);
+    return (obj.features || []).some((f) =>
+      typeof f === 'string' ? f === name : f.kind === name
+    );
   }
   if (ORBITAL_FACILITY_CLASSES[name]) {
     return (obj.moons || []).some((m) => m.kind === name);
@@ -12,8 +14,15 @@ function hasFacility(obj, name) {
 
 function canCreate(obj, name) {
   if (name === 'Spaceport') return { allowed: true, reason: '' };
+  if (SURFACE_FACILITY_CLASSES[name]) {
+    if (obj.type === 'gas') {
+      return { allowed: false, reason: 'Cannot build on gas objects' };
+    }
+  }
   if (name === 'Base') {
-    const ok = (obj.features || []).includes('Spaceport');
+    const ok = (obj.features || []).some((f) =>
+      typeof f === 'string' ? f === 'Spaceport' : f.kind === 'Spaceport'
+    );
     return { allowed: ok, reason: 'Requires Spaceport' };
   }
   if (ORBITAL_FACILITY_CLASSES[name]) {
@@ -31,10 +40,11 @@ function showToast(message) {
   toast.addEventListener('animationend', () => toast.remove());
 }
 
-function create(obj, name) {
+function create(obj, name, facilityName) {
   if (!SURFACE_FACILITY_CLASSES[name]) return;
+  if (obj.type === 'gas') return;
   obj.features = obj.features || [];
-  obj.features.push(name);
+  obj.features.push({ kind: name, name: facilityName });
 }
 
 export function createFacilityDialog(obj, onCreate = null) {
@@ -73,8 +83,10 @@ export function createFacilityDialog(obj, onCreate = null) {
         obj.moons.push(facility);
         showToast(`${facility.name} created`);
       } else {
-        create(obj, name);
-        showToast(`${name} created`);
+        const input = window.prompt('Facility name', name);
+        const facilityName = input?.trim() || name;
+        create(obj, name, facilityName);
+        showToast(`${facilityName} created`);
       }
       onCreate?.();
       dialog.close?.();
