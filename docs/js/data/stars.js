@@ -56,7 +56,7 @@ export const STAR_TYPES = [
     mass: [0.8, 1.04],
     luminosity: [0.6, 1.5],
     radius: [0.9, 1.15],
-    habitableZone: [0.95, 1.4],
+    habitableZone: [0.7, 1.8],
     temperatureModifier: 1
   },
   {
